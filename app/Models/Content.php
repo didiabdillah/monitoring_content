@@ -9,6 +9,12 @@ class Content extends Model
     protected $primaryKey = 'content_id';
 
     protected $fillable = [
-        'content_user_id',    'content_type',    'content_file',    'content_link',
+        'content_user_id',    'content_type',    'content_file', 'content_title',    'content_link', 'content_status', 'content_note',
     ];
+
+
+    public function content_file()
+    {
+        return $this->hasMany('App\Models\Content_file', 'content_file_content_id');
+    }
 }

@@ -116,7 +116,7 @@
             <!-- Brand Logo -->
             <a href="{{url('/home')}}" class="brand-link">
                 <img src="{{URL::asset('assets/img/logo/' . $logo)}}" alt="" class="brand-image img-circle elevation-3" style="opacity: 1;">
-                <span class="brand-text font-weight-light">Monitoring</span>
+                <span class="brand-text font-weight-light">Monitoring Content</span>
             </a>
 
             <!-- Sidebar -->
@@ -162,26 +162,10 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('domain')}}" class="nav-link @if(Request::segment(1) == 'domain' || Request::segment(2) == 'domain') {{'active'}} @endif">
-                                <i class="nav-icon fas fa-globe"></i>
+                            <a href="{{route('content')}}" class="nav-link @if(Request::segment(1) == 'content' || Request::segment(2) == 'content') {{'active'}} @endif">
+                                <i class="nav-icon fas fa-file-alt"></i>
                                 <p>
-                                    Domain
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('hosting')}}" class="nav-link @if(Request::segment(1) == 'hosting' || Request::segment(2) == 'hosting') {{'active'}} @endif">
-                                <i class="nav-icon fas fa-server"></i>
-                                <p>
-                                    Hosting
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('provider')}}" class="nav-link @if(Request::segment(1) == 'provider' || Request::segment(2) == 'provider') {{'active'}} @endif">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                    Provider
+                                    Content
                                 </p>
                             </a>
                         </li>
@@ -220,7 +204,7 @@
 
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block" style="margin-top: -13px;">
-                <b>Copyright &copy; {{date('Y')}} Monitoring </b>All rights reserved.
+                <b>Copyright &copy; {{date('Y')}} Monitoring Content</b> All rights reserved.
             </div>
 
         </footer>

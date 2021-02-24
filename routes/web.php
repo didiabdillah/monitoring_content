@@ -36,6 +36,71 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
     });
 });
 
-Route::get('/home', function () {
-    return "Home";
-})->name('home');
+//USER PAGE (LOGIN REQUIRED)
+Route::group(['middleware' => ['prevent_Back_Button']], function () {
+    Route::group(['middleware' => ['is_Login']], function () {
+        //Home
+        Route::get('/home', 'HomeController@index')->name('home');
+
+        //403 Forbidden Page
+        Route::get('/forbidden', 'ErrorController@forbidden')->name('forbidden');
+
+        //404 Not Found Page
+        Route::get('/notfound', 'ErrorController@not_found')->name('not_found');
+
+        //Notification
+        Route::get('/notification', 'NotificationController@index')->name('notification');
+
+        //FOR ADMIN ONLY
+        Route::group(['middleware' => ['is_Admin']], function () {
+            //Setting
+            Route::group(['prefix' => 'setting'], function () {
+                Route::get('/', 'SettingController@index')->name('setting');
+                Route::patch('/', 'SettingController@update')->name('setting_update');
+                Route::patch('/logo', 'SettingController@logo')->name('setting_logo');
+                Route::patch('/favicon', 'SettingController@favicon')->name('setting_favicon');
+            });
+
+            //Operator
+            Route::group(['prefix' => 'operator'], function () {
+                Route::get('/', 'OperatorController@index')->name('operator');
+                Route::get('/insert', 'OperatorController@insert')->name('operator_insert');
+                Route::post('/insert', 'OperatorController@store')->name('operator_store');
+                Route::get('/edit/{id}', 'OperatorController@edit')->name('operator_edit');
+                Route::patch('/edit/{id}', 'OperatorController@update')->name('operator_update');
+                Route::delete('/destroy/{id}', 'OperatorController@destroy')->name('operator_destroy');
+            });
+        });
+
+
+        //Profile
+        Route::group(['prefix' => 'u'], function () {
+            Route::get('/{id}', 'ProfileController@index')->name('profile');
+            Route::get('/{id}/setting', 'ProfileController@setting')->name('profile_setting');
+            Route::patch('/{id}/setting', 'ProfileController@profile_update')->name('profile_setting_update');
+            Route::put('/{id}/setting', 'ProfileController@password_update')->name('profile_setting_update_password');
+            Route::patch('/{id}/setting/picture', 'ProfileController@picture_update')->name('profile_setting_update_picture');
+        });
+
+        //Content
+        Route::group(['prefix' => 'content'], function () {
+            Route::get('/', 'ContentController@index')->name('content');
+            Route::get('/insert', 'ContentController@insert')->name('content_insert');
+            Route::post('/insert', 'ContentController@store')->name('content_store');
+            Route::get('/edit/{id}', 'ContentController@edit')->name('content_edit');
+            Route::patch('/edit/{id}', 'ContentController@update')->name('content_update');
+            Route::delete('/destroy/{id}', 'ContentController@destroy')->name('content_destroy');
+
+            // Provider Detail
+            Route::group(['prefix' => '{content_id}'], function () {
+                Route::get('/', 'ContentController@detail')->name('content_detail');
+                Route::get('/download/{content_file_name}', 'ContentController@file_download')->name('content_file_download');
+            });
+        });
+    });
+});
+
+// TELEGRAM WEBHOOK
+Route::patch('/telegram/setwebhook', 'TelegramController@refreshWebhook')->name('telegram_setwebhook');
+
+Route::get('/test', 'Controller@image_intervention_test');
