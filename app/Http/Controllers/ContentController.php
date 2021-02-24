@@ -233,18 +233,16 @@ class ContentController extends Controller
         return redirect()->route('content');
     }
 
-    // //Provider Detail
-    // public function detail($provider_id)
-    // {
-    //     $provider = Provider_detail::join('providers', 'provider_details.provider_detail_provider_id', '=', 'providers.provider_id')
-    //         ->select('provider_details.*', 'providers.provider_name', 'providers.provider_id', 'providers.provider_name')
-    //         ->where('provider_detail_provider_id', $provider_id)
-    //         ->orderBy('provider_detail_month', 'desc')
-    //         ->orderBy('provider_detail_year', 'desc')
-    //         ->get();
+    //Content Detail
+    public function detail($content_id)
+    {
+        $content = Content::where('content_id', $content_id)
+            ->select('contents.*', 'users.user_name',)
+            ->join('users', 'contents.content_user_id', '=', 'users.user_id')
+            ->first();
 
-    //     return view('provider_detail.provider_detail', ['provider' => $provider, 'provider_id' => $provider_id]);
-    // }
+        return view('content.detail', ['content' => $content]);
+    }
 
     public function file_download($content_id, $content_file_name)
     {
