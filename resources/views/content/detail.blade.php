@@ -1,6 +1,6 @@
 @extends('layout.layout_admin')
 
-@section('title', 'Content')
+@section('title', 'Detail Content')
 
 @section('page')
 
@@ -81,9 +81,9 @@
 
                                 <hr>
 
-                                <strong><i class="fas fa-calendar-alt mr-1"></i> Date</strong>
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Date, Time</strong>
 
-                                <p class="text-muted"> {{$content->updated_at}}</p>
+                                <p class="text-muted"> {{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</p>
 
                                 <hr>
 

@@ -159,12 +159,129 @@ class ContentController extends Controller
         return redirect()->route('content');
     }
 
-    // public function edit($id)
-    // {
-    //     $provider = Provider::find($id);
+    public function edit($id)
+    {
+        $content = Content::find($id);
 
-    //     return view('provider.edit', ['provider' => $provider]);
-    // }
+        if ($content->content_type == "file") {
+            return view('content.operator.edit_file', ['content' => $content]);
+        } else if ($content->content_type == "link") {
+            foreach ($content->content_link()->get() as $link) {
+                $content_link = $link->content_link_url;
+            }
+            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link]);
+        }
+    }
+
+    public function update_file(Request $request, $id)
+    {
+        $content = Content::find($id);
+        // $content_files = Content_file::where('content_file_content_id', $id)->get();
+
+        // Input Validation
+        $request->validate(
+            [
+                'title'  => 'required|max:255',
+                'note'  => 'max:60000',
+                // 'file.*'  => 'required|mimes:docx',
+            ],
+            // [
+            //     'file.*.mimes' => 'The document must be a file of type:docx.'
+            // ]
+        );
+
+        $title = htmlspecialchars($request->title);
+        $note = htmlspecialchars($request->note);
+        $user_id = $request->session()->get('user_id');
+        $destination_word = "assets/file/word/";
+        $destination_pdf = "assets/file/pdf/";
+
+        //Insert Data
+        $data_content = [
+            'content_title' => $title,
+            'content_note' => $note,
+            'content_type' => $content->content_type,
+            'content_user_id' => $user_id,
+            'content_link' => NULL,
+            'content_status' => $content->content_status,
+            'content_file' => NULL,
+        ];
+        Content::where('content_id', $id)
+            ->update($data_content);
+
+        // FILE
+        // if ($request->file()) {
+        // foreach ($content_files as $content_file) {
+        //     // update File
+        //     $data = [
+        //         'content_file_url' => $link,
+        //     ];
+        //     Content_link::where('content_link_id', $content_link->content_link_id)
+        //         ->update($data);
+        // }
+        // }
+
+
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Update Success', //Alert Message 
+            'Content Updated' //Sub Alert Message
+        );
+
+        return redirect()->route('content');
+    }
+
+    public function update_link(Request $request, $id)
+    {
+        $content = Content::find($id);
+        $content_links = Content_link::where('content_link_content_id', $id)->get();
+
+        // Input Validation
+        $request->validate(
+            [
+                'title'  => 'required|max:255',
+                'note'  => 'max:60000',
+                'link'  => 'required|max:255',
+            ]
+        );
+
+        $title = htmlspecialchars($request->title);
+        $note = htmlspecialchars($request->note);
+        $user_id = $request->session()->get('user_id');
+        $link = htmlspecialchars($request->link);
+
+        //Insert Data
+        $data_content = [
+            'content_title' => $title,
+            'content_note' => $note,
+            'content_type' => $content->content_type,
+            'content_user_id' => $user_id,
+            'content_link' => NULL,
+            'content_status' => $content->content_status,
+            'content_file' => NULL,
+        ];
+        Content::where('content_id', $id)
+            ->update($data_content);
+
+        foreach ($content_links as $content_link) {
+            // update Link
+            $data = [
+                'content_link_url' => $link,
+            ];
+            Content_link::where('content_link_id', $content_link->content_link_id)
+                ->update($data);
+        }
+
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Update Success', //Alert Message 
+            'Content Updated' //Sub Alert Message
+        );
+
+        return redirect()->route('content');
+    }
 
     // public function update(Request $request, $id)
     // {

@@ -89,7 +89,8 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::post('/insert/file', 'ContentController@store_file')->name('content_store_file');
             Route::post('/insert/link', 'ContentController@store_link')->name('content_store_link');
             Route::get('/edit/{id}', 'ContentController@edit')->name('content_edit');
-            Route::patch('/edit/{id}', 'ContentController@update')->name('content_update');
+            Route::patch('/edit/{id}/file', 'ContentController@update_file')->name('content_update_file');
+            Route::patch('/edit/{id}/link', 'ContentController@update_link')->name('content_update_link');
             Route::delete('/destroy/{id}', 'ContentController@destroy')->name('content_destroy');
 
             // Provider Detail
