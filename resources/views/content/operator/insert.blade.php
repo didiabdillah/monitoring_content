@@ -10,81 +10,136 @@
 <div class="content-wrapper">
 
     <!-- Overview content -->
-    <section class="content mt-3">
+    <section class="content">
 
         <!--Content -->
-        <section class="content">
+        <section class="content mt-3">
             <div class="container-fluid">
-                <!-- general form elements -->
-                <div class="card card-primary">
+                <!-- Default box -->
+                <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Insert Content</h3>
+                        Insert Content
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form action="{{route('content_store')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="title">Title</label>
-                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
-                                @error('title')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
 
-                            <div class="form-group">
-                                <label for="note">Note</label>
-                                <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
-                                @error('note')
-                                <div class=" invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#file" data-toggle="tab">File</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#link" data-toggle="tab">Link</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
 
-                            <div class="form-group">
-                                <label for="type">Type</label>
-                                <select class="form-control select2 type-option @error('type') is-invalid @enderror" data-placeholder="Select Type" style="width: 100%;" name="type">
-                                    <option value="file" selected>File</option>
-                                    <option value="link">Link</option>
-                                </select>
-                                @error('type')
-                                <div class="invalid-feedback">
-                                    Please select type
-                                </div>
-                                @enderror
-                            </div>
+                    <div class="card-body">
+                        <div class="tab-content">
 
-                            <div class="form-group">
-                                <label for="file">File Upload</label>
-                                <div class="input-group  @error('file') is-invalid @enderror">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
-                                        <label class="custom-file-label" for="file">Choose file</label>
+                            <!-- DOMAIN TAB -->
+                            <div class="active tab-pane" id="file">
+                                <!-- form start -->
+                                <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="title">Title</label>
+                                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                            @error('title')
+                                            <div class="invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="note">Note</label>
+                                            <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                            @error('note')
+                                            <div class=" invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="file">File Upload (Can Multiple)</label>
+                                            <div class="input-group  @error('file') is-invalid @enderror">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
+                                                    <label class="custom-file-label" for="file">Choose file</label>
+                                                </div>
+                                            </div>
+                                            @error('file')
+                                            <div class="invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
-                                @error('file')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <!-- /.card-body -->
+                                    <!-- /.card-body -->
 
-                        <div class="card-footer">
-                            <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                    <div class="card-footer">
+                                        <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <!-- /.tab-pane -->
+
+                            <!-- CHART TAB -->
+                            <div class="tab-pane" id="link">
+                                <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="title">Title</label>
+                                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                            @error('title')
+                                            <div class="invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="note">Note</label>
+                                            <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                            @error('note')
+                                            <div class=" invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="link">Link</label>
+                                            <input type="text" class="form-control @error('link') is-invalid @enderror" id="link" name="link" placeholder="Link" value="{{old('link')}}">
+                                            @error('link')
+                                            <div class="invalid-feedback">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <!-- /.tab-pane -->
                         </div>
-                    </form>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
                 </div>
                 <!-- /.card -->
             </div>
         </section>
-
     </section>
 
 </div>
@@ -112,7 +167,7 @@
 </script>
 
 
-<script>
+<!-- <script>
     //WHEN PROVIDER SELECTED
     $('select.type-option').change(function() {
 
@@ -125,5 +180,5 @@
 
         return false;
     });
-</script>
+</script> -->
 @endpush

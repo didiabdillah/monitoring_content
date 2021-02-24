@@ -58,10 +58,9 @@
                                     <th>No</th>
                                     <th>Title</th>
                                     <th>Type</th>
-                                    <th>Content</th>
-                                    <th>Note</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Content</th>
                                     <th>Options</th>
                                 </tr>
                             </thead>
@@ -82,23 +81,39 @@
                                     </td>
 
                                     <td>
-                                        @if($data->content_type=="link")
-                                        <a href="{{$data->content_link}}">{{$data->content_link}}</a>
-                                        @elseif($data->content_type=="file")
-                                        <h6>File</h6>
+                                        @if($data->content_status == "processing")
+                                        <h6>
+                                            <span class="badge badge-pill badge-primary">{{$data->content_status}}</span>
+                                        </h6>
+                                        @elseif($data->content_status == "received")
+                                        <h6>
+                                            <span class="badge badge-pill badge-success">{{$data->content_status}}</span>
+                                        </h6>
+                                        @elseif($data->content_status == "rejected")
+                                        <h6>
+                                            <span class="badge badge-pill badge-danger">{{$data->content_status}}</span>
+                                        </h6>
                                         @endif
                                     </td>
 
                                     <td>
-                                        <h6>{{$data->content_note}}</h6>
+                                        <h6>{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y')}}</h6>
                                     </td>
 
                                     <td>
-                                        <h6>{{$data->content_status}}</h6>
-                                    </td>
-
-                                    <td>
-                                        <h6>{{$data->created_at}}</h6>
+                                        @if($data->content_type=="link")
+                                        @foreach($data->content_link()->get() as $link)
+                                        <a href="{{$link->content_link_url}}">{{$link->content_link_url}}</a>
+                                        @endforeach
+                                        @elseif($data->content_type=="file")
+                                        @foreach($data->content_file()->get() as $file)
+                                        <h6>
+                                            <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
+                                            <a href="{{route('content_file_preview', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
+                                            <a href="{{route('content_file_download', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
+                                        </h6>
+                                        @endforeach
+                                        @endif
                                     </td>
 
                                     <td>

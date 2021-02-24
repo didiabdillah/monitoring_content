@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
+use PDF;
+use Illuminate\Support\Facades\File;
 
 use App\Models\Content;
 use App\Models\Content_file;
+use App\Models\Content_link;
 
 class ContentController extends Controller
 {
@@ -19,7 +21,7 @@ class ContentController extends Controller
         if ($user_role == "admin") {
             $content = Content::select('contents.*', 'users.user_name')
                 ->join('users', 'contents.content_user_id', '=', 'users.user_id')
-                ->orderBy('created_at', 'desc')->get();
+                ->orderBy('updated_at', 'desc')->get();
 
             return view('content.admin.content', ['content' => $content]);
         } else if ($user_role == "operator") {
@@ -32,32 +34,31 @@ class ContentController extends Controller
         }
     }
 
-
     public function insert()
     {
         return view('content.operator.insert');
     }
 
-    public function store(Request $request)
+    public function store_file(Request $request)
     {
         // Input Validation
         $request->validate(
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                'file.*'  => 'required|mimes:doc,docx',
-                'type'  => 'required',
+                'file.*'  => 'required|mimes:docx',
             ],
             [
-                'file.*.mimes' => 'The document must be a file of type: doc, docx.'
+                'file.*.mimes' => 'The document must be a file of type:docx.'
             ]
         );
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
-        $type = htmlspecialchars($request->type);
+        $type = "file";
         $user_id = $request->session()->get('user_id');
-        $destination = "assets/file/";
+        $destination_word = "assets/file/word/";
+        $destination_pdf = "assets/file/pdf/";
 
         //Insert Data
         $data_content = [
@@ -74,6 +75,9 @@ class ContentController extends Controller
         // insert file
         foreach ($request->file() as $files) {
             foreach ($files as $file) {
+                $hashName = $file->hashName();
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
 
                 $data = [
                     'content_file_content_id' => $query->content_id,
@@ -83,11 +87,68 @@ class ContentController extends Controller
                     'content_file_extension' => $file->getClientOriginalExtension(),
                 ];
 
-                $file->move($destination, $file->hashName());
+                $file->move($destination_word, $file->hashName());
+
+                /* Set the PDF Engine Renderer Path */
+                $domPdfPath = base_path('vendor/dompdf/dompdf');
+                \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                //Load word file
+                $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+
+                //Save it into PDF
+                $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
 
                 Content_file::create($data);
             }
         }
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Add Success', //Alert Message 
+            'New Content Added' //Sub Alert Message
+        );
+
+        return redirect()->route('content');
+    }
+
+    public function store_link(Request $request)
+    {
+        // Input Validation
+        $request->validate(
+            [
+                'title'  => 'required|max:255',
+                'note'  => 'max:60000',
+                'link'  => 'required|max:255',
+            ]
+        );
+
+        $title = htmlspecialchars($request->title);
+        $note = htmlspecialchars($request->note);
+        $type = "link";
+        $user_id = $request->session()->get('user_id');
+        $link = htmlspecialchars($request->link);
+
+        //Insert Data
+        $data_content = [
+            'content_title' => $title,
+            'content_note' => $note,
+            'content_type' => $type,
+            'content_user_id' => $user_id,
+            'content_link' => NULL,
+            'content_status' => "processing",
+            'content_file' => NULL,
+        ];
+        $query = Content::create($data_content);
+
+        // insert Link
+        $data = [
+            'content_link_content_id' => $query->content_id,
+            'content_link_url' => $link,
+        ];
+        Content_link::create($data);
+
         //Flash Message
         flash_alert(
             __('alert.icon_success'), //Icon
@@ -143,19 +204,34 @@ class ContentController extends Controller
     //     return redirect()->route('provider');
     // }
 
-    // public function destroy($id)
-    // {
-    //     Provider::destroy('provider_id', $id);
+    public function destroy($id)
+    {
+        $Content = Content::where('content_id', $id)->first();
 
-    //     //Flash Message
-    //     flash_alert(
-    //         __('alert.icon_success'), //Icon
-    //         'Remove Success', //Alert Message 
-    //         'Provider Name Removed' //Sub Alert Message
-    //     );
+        if ($Content->content_type == "file") {
+            $content_file = Content_file::where('content_file_content_id', $Content->content_id)->get();
 
-    //     return redirect()->route('provider');
-    // }
+            foreach ($content_file as $file) {
+                File::delete(public_path('assets/file/word/' . $file->content_file_hash_name));
+                File::delete(public_path('assets/file/pdf/' . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+            }
+
+            Content_file::where('content_file_content_id', $Content->content_id)->delete();
+        } elseif ($Content->content_type == "link") {
+            Content_link::where('content_link_content_id', $Content->content_id)->delete();
+        }
+
+        Content::destroy('content_id', $id);
+
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Remove Success', //Alert Message 
+            'Content Removed' //Sub Alert Message
+        );
+
+        return redirect()->route('content');
+    }
 
     // //Provider Detail
     // public function detail($provider_id)
@@ -177,7 +253,7 @@ class ContentController extends Controller
             ->first();
 
         if ($content_file) {
-            $file = public_path("assets/file/" . $content_file->content_file_hash_name);
+            $file = public_path("assets/file/word/" . $content_file->content_file_hash_name);
 
             $headers = array(
                 'Content-Type' => mime_content_type($file),
@@ -185,5 +261,17 @@ class ContentController extends Controller
 
             return response()->download($file, $content_file->content_file_original_name, $headers);
         }
+    }
+
+    public function file_preview($content_id, $content_file_name)
+    {
+        // The location of the PDF file 
+        // on the server 
+        $filename = public_path("assets/file/pdf/" . pathinfo($content_file_name, PATHINFO_FILENAME) . ".pdf");
+        $headers = array(
+            'Content-Type' => mime_content_type($filename),
+        );
+
+        return response()->file($filename, $headers);
     }
 }

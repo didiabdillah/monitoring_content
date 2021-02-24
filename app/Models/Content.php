@@ -17,4 +17,9 @@ class Content extends Model
     {
         return $this->hasMany('App\Models\Content_file', 'content_file_content_id');
     }
+
+    public function content_link()
+    {
+        return $this->hasMany('App\Models\Content_link', 'content_link_content_id');
+    }
 }

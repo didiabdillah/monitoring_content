@@ -86,7 +86,8 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
         Route::group(['prefix' => 'content'], function () {
             Route::get('/', 'ContentController@index')->name('content');
             Route::get('/insert', 'ContentController@insert')->name('content_insert');
-            Route::post('/insert', 'ContentController@store')->name('content_store');
+            Route::post('/insert/file', 'ContentController@store_file')->name('content_store_file');
+            Route::post('/insert/link', 'ContentController@store_link')->name('content_store_link');
             Route::get('/edit/{id}', 'ContentController@edit')->name('content_edit');
             Route::patch('/edit/{id}', 'ContentController@update')->name('content_update');
             Route::delete('/destroy/{id}', 'ContentController@destroy')->name('content_destroy');
@@ -95,6 +96,7 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::group(['prefix' => '{content_id}'], function () {
                 Route::get('/', 'ContentController@detail')->name('content_detail');
                 Route::get('/download/{content_file_name}', 'ContentController@file_download')->name('content_file_download');
+                Route::get('/preview/{content_file_name}', 'ContentController@file_preview')->name('content_file_preview');
             });
         });
     });
