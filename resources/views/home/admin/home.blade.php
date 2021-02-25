@@ -3,7 +3,7 @@
 @section('title', 'Home')
 
 @section('page')
-{{--
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 
@@ -25,224 +25,44 @@
 
             <div class="container-fluid">
 
-                <!-- DOMAIN AND HOSTING PRICE RANK -->
+                <!-- ADMIN -->
                 <div class="row">
-
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <!-- small card -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{$domain}}</h3>
+                                <h3>{{$total_target}}</h3>
 
-<p>Domain</p>
-</div>
-<div class="icon">
-    <i class="fas fa-globe"></i>
-</div>
-</div>
-</div>
-<!-- ./col -->
-<div class="col-md-3">
-    <!-- small card -->
-    <div class="small-box bg-success">
-        <div class="inner">
-            <h3>{{$hosting}}</h3>
-
-            <p>Hosting</p>
-        </div>
-        <div class="icon">
-            <i class="fas fa-server"></i>
-        </div>
-    </div>
-</div>
-<!-- ./col -->
-<div class="col-md-3">
-    <!-- small card -->
-    <div class="small-box bg-primary">
-        <div class="inner">
-            <h3>{{$provider}}</h3>
-
-            <p>Provider</p>
-        </div>
-        <div class="icon">
-            <i class="fas fa-cogs"></i>
-        </div>
-    </div>
-</div>
-<!-- ./col -->
-<div class="col-md-3">
-    <!-- small card -->
-    <div class="small-box bg-danger">
-        <div class="inner">
-            <h3>{{$user}}</h3>
-
-            <p>Operator</p>
-        </div>
-        <div class="icon">
-            <i class="fas fa-users"></i>
-        </div>
-    </div>
-</div>
-<!-- ./col -->
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header border-0">
-                <h3 class="card-title"><strong>Domain Rank Price, {{Carbon\Carbon::parse(date('Y-m-d'))->isoFormat('MMMM Y')}}</strong></h3>
-
-                <div class="card-tools mr-1">
-                    <div class="row">
-                        <button type="button" id="domainCheapButton" class="btn btn-primary btn-sm mr-1">Cheapest</button>
-
-                        <button type="button" id="domainExpensiveButton" class="btn btn-outline-primary btn-sm">Most Expensive</button>
+                                <p>All User Target</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-calendar-times"></i>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-body pb-3">
-                <select class="form-control select2 domain-rank-option " data-placeholder="Select Domain" style="width: 100%;" name="rank_domain">
-                    @foreach($domain_list as $data)
-                    <option value="{{$data->domain_id}}" @if($loop->iteration == 1) selected @endif>{{$data->domain_name}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="card-body p-0">
+                    <!-- ./col -->
+                    <div class="col-md-6">
+                        <!-- small card -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>{{$total_user}}</h3>
 
-                <table class="table table-valign-middle" id="rankDomain">
-                    <thead>
-                        <tr>
-                            <th>Provider</th>
-                            <th>Domain</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="2">
-                                Data Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- /.card -->
-    </div>
-
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header border-0">
-                <h3 class="card-title"><strong>Hosting Rank Price, {{Carbon\Carbon::parse(date('Y-m-d'))->isoFormat('MMMM Y')}}</strong></h3>
-
-                <div class="card-tools mr-1">
-                    <div class="row">
-                        <button type="button" id="hostingCheapButton" class="btn btn-primary btn-sm mr-1">Cheapest</button>
-
-                        <button type="button" id="hostingExpensiveButton" class="btn btn-outline-primary btn-sm">Most Expensive</button>
+                                <p>Operator</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
                     </div>
+                    <!-- ./col -->
                 </div>
+
             </div>
-            <div class="card-body p-0">
-                <table class="table table-valign-middle mt-4" id="rankHosting">
-                    <thead>
-                        <tr>
-                            <th>Provider</th>
-                            <th>Hosting</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if($cheapest_hosting != NULL)
-                        @foreach($cheapest_hosting as $data)
-                        <tr>
-                            <td>
-                                {{$data->provider_name}}
-                            </td>
-                            <td>
-                                {{$data->hosting_type}}
-                            </td>
-                            <td>
-                                Rp. {{number_format($data->hosting_detail_price, 0, ',', '.')}}
-                            </td>
-                        </tr>
-                        @endforeach
-                        @else
-                        <tr>
-                            <td colspan="2">
-                                Data Empty
-                            </td>
-
-                        </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- /.card -->
-    </div>
-</div>
-
-
-
-<!-- DOMAIN AND HOSTING CHART -->
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-3"><strong>Domain Chart</strong></h4>
-                <select class="form-control select2 domain-option" data-placeholder="Select Domain" style="width: 100%;" name="domain">
-                    <option value="">Select Domain</option>
-                    @foreach($domain_list as $data)
-                    <option value="{{$data->domain_id}}">{{$data->domain_name}}</option>
-                    @endforeach
-                </select>
-
-                <div class="domain-provider mt-2">
-
-                </div>
-
-                <div class="card-body">
-                    <div class="chart domain">
-                        <!-- CHART Will Render Here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-3"><strong>Hosting Chart</strong></h4>
-                <select class="form-control select2 hosting-option" data-placeholder="Select Hosting" style="width: 100%;" name="hosting">
-                    <option value="">Select Hosting</option>
-                    @foreach($hosting_list as $data)
-                    <option value="{{$data->hosting_id}}">{{$data->hosting_type}}</option>
-                    @endforeach
-                </select>
-
-                <div class="hosting-provider mt-2">
-
-                </div>
-
-                <div class="card-body">
-                    <div class="chart hosting">
-                        <!-- CHART Will Render Here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-</div>
-</section>
+        </section>
 </div>
 <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
---}}
+
+
 @endsection
 
 @push('plugin')

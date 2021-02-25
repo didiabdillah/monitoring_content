@@ -25,7 +25,7 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'user_email' => 'abdillah1965didiokey@gmail.com',
         'user_phone' => '087727598653',
         'user_role' => 'admin',
-        'user_daily_target' => 2,
+        'user_daily_target' => 0,
         'user_password' => Hash::make('12345678'), // 12345678
         'user_image' => 'default.jpg',
     ];

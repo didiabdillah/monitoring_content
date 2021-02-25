@@ -6,13 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 
-use App\Models\Domain;
-use App\Models\Hosting;
 use App\Models\User;
 use App\Models\Notification;
-use App\Models\Provider;
-use App\Models\Domain_detail;
-use App\Models\Hosting_detail;
+use App\Models\Content;
 
 class HomeController extends Controller
 {
@@ -35,17 +31,29 @@ class HomeController extends Controller
         //     ->get();
         // $cheapest_hosting = (count($cheapest_hosting) != 0) ? $cheapest_hosting : NULL;
 
-        // return view('home.home', [
-        //     'domain' => $domain,
-        //     'hosting' => $hosting,
-        //     'notification' => $notification,
-        //     'user' => $user,
-        //     'provider' => $provider,
-        //     'domain_list' => $domain_list,
-        //     'hosting_list' => $hosting_list,
-        //     'cheapest_hosting' => $cheapest_hosting
-        // ]);
+        $role = Session::get('user_role');
+        $userId = Session::get('user_id');
 
-        return view('home.home');
+        if ($role == "admin") {
+            $total_target = User::select(User::raw('SUM(user_daily_target) as total_target'))->first();
+            $total_user = User::count();
+
+            return view('home.admin.home', ['total_target' => $total_target->total_target, 'total_user' => $total_user]);
+        } else if ($role == "operator") {
+            $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
+            $today_uploaded = Content::where('content_user_id', $userId)
+                ->where('content_status', 'received')
+                ->whereBetween('updated_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
+
+            $today_upload_remaining = NULL;
+
+            if ($today_uploaded == 0) {
+                $today_upload_remaining = $daily_target->target;
+            } else {
+                $today_upload_remaining = $daily_target->target - $today_uploaded;
+            }
+
+            return view('home.operator.home', ['daily_target' => $daily_target->target, 'today_upload_remaining' => $today_upload_remaining]);
+        }
     }
 }

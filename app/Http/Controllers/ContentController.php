@@ -389,4 +389,50 @@ class ContentController extends Controller
 
         return response()->file($filename, $headers);
     }
+
+    public function confirm($content_id)
+    {
+        $content = Content::where('content_id', $content_id)
+            ->select('contents.*', 'users.user_name',)
+            ->join('users', 'contents.content_user_id', '=', 'users.user_id')
+            ->first();
+
+        return view('content.admin.confirm', ['content' => $content]);
+    }
+
+    public function confirm_update(Request $request, $content_id)
+    {
+        $id = $content_id;
+
+        $content = Content::find($id);
+
+        // Input Validation
+        $request->validate(
+            [
+                'confirm'  => 'required',
+                'comment'  => 'max:60000',
+            ]
+        );
+
+        $user_id = $request->session()->get('user_id');
+        $confirm = htmlspecialchars($request->confirm);
+        $comment = htmlspecialchars($request->comment);
+
+        //Insert Data
+        $data_content = [
+            'content_status' => $confirm,
+            'content_comment' => $comment,
+        ];
+        Content::where('content_id', $id)
+            ->update($data_content);
+
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Update Status Success', //Alert Message 
+            'Content Status Updated' //Sub Alert Message
+        );
+
+        return redirect()->route('content');
+    }
 }

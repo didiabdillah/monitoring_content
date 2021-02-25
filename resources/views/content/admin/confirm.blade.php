@@ -1,6 +1,6 @@
 @extends('layout.layout_admin')
 
-@section('title', 'Detail Content')
+@section('title', 'Confirm Content')
 
 @section('page')
 
@@ -93,14 +93,6 @@
 
                                 <hr>
 
-                                @if($content->content_comment != NULL)
-                                <strong><i class="fas fa-comment mr-1"></i> Comment</strong>
-
-                                <p class="text-muted text-danger"> {{$content->content_comment}}</p>
-
-                                <hr>
-                                @endif
-
                                 @if($content->content_type=="link")
                                 <strong><i class="fas fa-link mr-1 mb-1"></i> Link</strong>
                                 @foreach($content->content_link()->get() as $link)
@@ -121,6 +113,44 @@
 
                             </div>
                             <!-- /.card-body -->
+
+                            <form action="{{route('content_confirm_update', $content->content_id)}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('patch')
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="confirm">Status</label>
+                                        <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
+                                            <option value="processing" @if($content->content_status == "processing"){{"selected"}}@endif>Processing</option>
+                                            <option value="received" @if($content->content_status == "received"){{"selected"}}@endif>Received</option>
+                                            <option value="rejected" @if($content->content_status == "rejected"){{"selected"}}@endif>Rejected</option>
+                                        </select>
+                                        @error('confirm')
+                                        <div class="invalid-feedback">
+                                            Please select status
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="comment">Comment</label>
+                                        <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" placeholder="Comment">{{$content->content_comment}}</textarea>
+                                        @error('comment')
+                                        <div class=" invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Update</button>
+                                </div>
+                            </form>
+
                         </div>
                         <!-- /.card -->
                     </div>

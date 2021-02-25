@@ -18,6 +18,7 @@ class CreateContentsTable extends Migration
             $table->string('content_user_id', 64);
             $table->string('content_title', 255);
             $table->text('content_note')->nullable();
+            $table->text('content_comment')->nullable();
             $table->enum('content_type', ['file', 'link']);
             $table->enum('content_status', ['received', 'processing', 'rejected']);
             $table->string('content_file', 255)->nullable();

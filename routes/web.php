@@ -96,6 +96,8 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             // Provider Detail
             Route::group(['prefix' => '{content_id}'], function () {
                 Route::get('/', 'ContentController@detail')->name('content_detail');
+                Route::get('/confirm', 'ContentController@confirm')->name('content_confirm');
+                Route::patch('/confirm', 'ContentController@confirm_update')->name('content_confirm_update');
                 Route::get('/download/{content_file_name}', 'ContentController@file_download')->name('content_file_download');
                 Route::get('/preview/{content_file_name}', 'ContentController@file_preview')->name('content_file_preview');
             });
