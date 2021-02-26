@@ -94,19 +94,6 @@
                                             <span class="badge badge-pill badge-danger">{{$data->content_status}}</span>
                                             @endif
 
-                                            @if($data->content_comment != NULL)
-                                            <!-- Example single danger button -->
-                                            <div class=" ml-2 btn-group">
-                                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Comment
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <p class="dropdown-header">Comment</p>
-                                                    <div class="dropdown-divider"></div>
-                                                    <p class="p-1 m-1">{{$data->content_comment}}</p>
-                                                </div>
-                                            </div>
-                                            @endif
                                         </h6>
                                     </td>
 

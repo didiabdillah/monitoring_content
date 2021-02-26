@@ -180,11 +180,11 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                // 'file.*'  => 'required|mimes:docx',
+                'file.*'  => 'mimes:docx',
             ],
-            // [
-            //     'file.*.mimes' => 'The document must be a file of type:docx.'
-            // ]
+            [
+                'file.*.mimes' => 'The document must be a file of type:docx.'
+            ]
         );
 
         $title = htmlspecialchars($request->title);
@@ -205,17 +205,39 @@ class ContentController extends Controller
             ->update($data_content);
 
         // FILE
-        // if ($request->file()) {
-        // foreach ($content_files as $content_file) {
-        //     // update File
-        //     $data = [
-        //         'content_file_url' => $link,
-        //     ];
-        //     Content_link::where('content_link_id', $content_link->content_link_id)
-        //         ->update($data);
-        // }
-        // }
+        if ($request->file()) {
+            // insert file
+            foreach ($request->file() as $files) {
+                foreach ($files as $file) {
+                    $hashName = $file->hashName();
+                    $originalName = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
 
+                    $data = [
+                        'content_file_content_id' => $content->content_id,
+                        'content_file_original_name' => $file->getClientOriginalName(),
+                        'content_file_hash_name' => $file->hashName(),
+                        'content_file_base_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                        'content_file_extension' => $file->getClientOriginalExtension(),
+                    ];
+
+                    $file->move($destination_word, $file->hashName());
+
+                    /* Set the PDF Engine Renderer Path */
+                    $domPdfPath = base_path('vendor/dompdf/dompdf');
+                    \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                    \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                    //Load word file
+                    $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+
+                    //Save it into PDF
+                    $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                    $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+
+                    Content_file::create($data);
+                }
+            }
+        }
 
         //Flash Message
         flash_alert(
@@ -225,6 +247,23 @@ class ContentController extends Controller
         );
 
         return redirect()->route('content');
+    }
+    public function update_file_remove(Request $request, $id)
+    {
+        $content_file_id = htmlspecialchars($request->file_id);
+        $file = Content_file::find($content_file_id);
+
+        $file_name = $file->content_file_hash_name;
+        $user_id = $request->session()->get('user_id');
+        $destination_word = "assets/file/word/";
+        $destination_pdf = "assets/file/pdf/";
+
+        File::delete(public_path($destination_word . $file->content_file_hash_name));
+        File::delete(public_path($destination_pdf . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+
+        Content_file::where('content_file_id', $file->content_file_id)->delete();
+
+        return $file_name;
     }
 
     public function update_link(Request $request, $id)
