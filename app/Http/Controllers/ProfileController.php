@@ -100,9 +100,9 @@ class ProfileController extends Controller
         $request->session()->put($session);
 
         //Update Cookie If Exist
-        if (Cookie::get('account')) {
+        if (Cookie::get('account') && Cookie::get('access')) {
             Cookie::queue(Cookie::forget('account'));
-            Cookie::queue(Cookie::make('account', htmlspecialchars($request->email), 10));
+            Cookie::queue(Cookie::make('account', htmlspecialchars($request->email), 60 * 24));
         }
 
         //Flash Message

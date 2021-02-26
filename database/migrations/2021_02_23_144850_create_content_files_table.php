@@ -35,7 +35,7 @@ class CreateContentFilesTable extends Migration
     public function down()
     {
         Schema::table('content_files', function (Blueprint $table) {
-            $table->dropForeign('content_files_content_user_id_foreign');
+            $table->dropForeign('content_files_content_file_content_id_foreign');
         });
         Schema::dropIfExists('content_files');
     }

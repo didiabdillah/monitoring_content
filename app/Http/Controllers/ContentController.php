@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 
 use App\Models\Content;
 use App\Models\Content_file;
+use App\Models\Content_history;
 use App\Models\Content_link;
 
 class ContentController extends Controller
@@ -66,9 +67,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $type,
             'content_user_id' => $user_id,
-            'content_link' => NULL,
-            'content_status' => "processing",
-            'content_file' => NULL,
+            'content_status' => __('content_status.content_status_process'),
         ];
         $query = Content::create($data_content);
 
@@ -136,9 +135,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $type,
             'content_user_id' => $user_id,
-            'content_link' => NULL,
-            'content_status' => "processing",
-            'content_file' => NULL,
+            'content_status' => __('content_status.content_status_process'),
         ];
         $query = Content::create($data_content);
 
@@ -202,9 +199,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $content->content_type,
             'content_user_id' => $user_id,
-            'content_link' => NULL,
             'content_status' => $content->content_status,
-            'content_file' => NULL,
         ];
         Content::where('content_id', $id)
             ->update($data_content);
@@ -257,9 +252,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $content->content_type,
             'content_user_id' => $user_id,
-            'content_link' => NULL,
             'content_status' => $content->content_status,
-            'content_file' => NULL,
         ];
         Content::where('content_id', $id)
             ->update($data_content);
@@ -410,21 +403,27 @@ class ContentController extends Controller
         $request->validate(
             [
                 'confirm'  => 'required',
-                'comment'  => 'max:60000',
+                'note'  => 'max:60000',
             ]
         );
 
         $user_id = $request->session()->get('user_id');
         $confirm = htmlspecialchars($request->confirm);
-        $comment = htmlspecialchars($request->comment);
+        $note = htmlspecialchars($request->note);
+
+        //Update Data
+        $data = [
+            'content_status' => $confirm,
+        ];
+        Content::where('content_id', $content_id)->update($data);
 
         //Insert Data
         $data_content = [
-            'content_status' => $confirm,
-            'content_comment' => $comment,
+            'content_history_content_id' => $content_id,
+            'content_history_status' => $confirm,
+            'content_history_note' => $note,
         ];
-        Content::where('content_id', $id)
-            ->update($data_content);
+        Content_history::create($data_content);
 
         //Flash Message
         flash_alert(

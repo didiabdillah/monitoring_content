@@ -82,14 +82,14 @@
 
                                     <td>
                                         <h6>
-                                            @if($data->content_status == "processing")
+                                            @if($data->content_status == __('content_status.content_status_process'))
                                             <span class="badge badge-pill badge-primary">{{$data->content_status}}</span>
 
-                                            @elseif($data->content_status == "received")
+                                            @elseif($data->content_status == __('content_status.content_status_success'))
 
                                             <span class="badge badge-pill badge-success">{{$data->content_status}}</span>
 
-                                            @elseif($data->content_status == "rejected")
+                                            @elseif($data->content_status == __('content_status.content_status_failed'))
 
                                             <span class="badge badge-pill badge-danger">{{$data->content_status}}</span>
                                             @endif

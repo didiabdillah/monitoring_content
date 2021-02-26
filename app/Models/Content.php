@@ -22,4 +22,9 @@ class Content extends Model
     {
         return $this->hasMany('App\Models\Content_link', 'content_link_content_id');
     }
+
+    public function content_history()
+    {
+        return $this->hasMany('App\Models\Content_history', 'content_history_content_id');
+    }
 }

@@ -64,11 +64,11 @@
                                 <strong><i class="fas fa-info-circle mr-1"></i> Status</strong>
 
                                 <p class="text-muted">
-                                    @if($content->content_status == "processing")
+                                    @if($content->content_status == __('content_status.content_status_process'))
                                     <span class="badge badge-pill badge-primary">{{$content->content_status}}</span>
-                                    @elseif($content->content_status == "received")
+                                    @elseif($content->content_status == __('content_status.content_status_success'))
                                     <span class="badge badge-pill badge-success">{{$content->content_status}}</span>
-                                    @elseif($content->content_status == "rejected")
+                                    @elseif($content->content_status == __('content_status.content_status_failed'))
                                     <span class="badge badge-pill badge-danger">{{$content->content_status}}</span>
                                     @endif
                                 </p>
@@ -122,9 +122,9 @@
                                     <div class="form-group">
                                         <label for="confirm">Status</label>
                                         <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
-                                            <option value="processing" @if($content->content_status == "processing"){{"selected"}}@endif>Processing</option>
-                                            <option value="received" @if($content->content_status == "received"){{"selected"}}@endif>Received</option>
-                                            <option value="rejected" @if($content->content_status == "rejected"){{"selected"}}@endif>Rejected</option>
+                                            <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option>
+                                            <option value="{{__('content_status.content_status_success')}}" @if($content->content_status == __('content_status.content_status_success')){{"selected"}}@endif>Accept</option>
+                                            <option value="{{__('content_status.content_status_failed')}}" @if($content->content_status == __('content_status.content_status_failed')){{"selected"}}@endif>Reject</option>
                                         </select>
                                         @error('confirm')
                                         <div class="invalid-feedback">
@@ -134,9 +134,10 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="comment">Comment</label>
-                                        <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" placeholder="Comment">{{$content->content_comment}}</textarea>
-                                        @error('comment')
+                                        <label for="note">Note</label>
+                                        @php // @endphp
+                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_comment}}</textarea>
+                                        @error('note')
                                         <div class=" invalid-feedback">
                                             {{$message}}
                                         </div>

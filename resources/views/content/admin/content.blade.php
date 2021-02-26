@@ -77,31 +77,18 @@
 
                                     <td>
                                         <h6>
-                                            @if($data->content_status == "processing")
+                                            @if($data->content_status == __('content_status.content_status_process'))
                                             <span class="badge badge-pill badge-primary">{{$data->content_status}}</span>
 
-                                            @elseif($data->content_status == "received")
+                                            @elseif($data->content_status == __('content_status.content_status_success'))
 
                                             <span class="badge badge-pill badge-success">{{$data->content_status}}</span>
 
-                                            @elseif($data->content_status == "rejected")
+                                            @elseif($data->content_status == __('content_status.content_status_failed'))
 
                                             <span class="badge badge-pill badge-danger">{{$data->content_status}}</span>
                                             @endif
 
-                                            @if($data->content_comment != NULL)
-                                            <!-- Example single danger button -->
-                                            <div class=" ml-2 btn-group">
-                                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Comment
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <p class="dropdown-header">Comment</p>
-                                                    <div class="dropdown-divider"></div>
-                                                    <p class="p-1 m-1">{{$data->content_comment}}</p>
-                                                </div>
-                                            </div>
-                                            @endif
                                         </h6>
                                     </td>
 

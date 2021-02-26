@@ -64,11 +64,11 @@
                                 <strong><i class="fas fa-info-circle mr-1"></i> Status</strong>
 
                                 <p class="text-muted">
-                                    @if($content->content_status == "processing")
+                                    @if($content->content_status == __('content_status.content_status_process'))
                                     <span class="badge badge-pill badge-primary">{{$content->content_status}}</span>
-                                    @elseif($content->content_status == "received")
+                                    @elseif($content->content_status == __('content_status.content_status_success'))
                                     <span class="badge badge-pill badge-success">{{$content->content_status}}</span>
-                                    @elseif($content->content_status == "rejected")
+                                    @elseif($content->content_status == __('content_status.content_status_failed'))
                                     <span class="badge badge-pill badge-danger">{{$content->content_status}}</span>
                                     @endif
                                 </p>
@@ -92,14 +92,6 @@
                                 <p class="text-muted"> {{$content->content_note}}</p>
 
                                 <hr>
-
-                                @if($content->content_comment != NULL)
-                                <strong><i class="fas fa-comment mr-1"></i> Comment</strong>
-
-                                <p class="text-muted text-danger"> {{$content->content_comment}}</p>
-
-                                <hr>
-                                @endif
 
                                 @if($content->content_type=="link")
                                 <strong><i class="fas fa-link mr-1 mb-1"></i> Link</strong>
@@ -125,6 +117,67 @@
                         <!-- /.card -->
                     </div>
                     <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- CONTENT HISTORY -->
+                <div class="card">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">Content History</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Date, Time</th>
+                                        <th>Status</th>
+                                        <th>Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($content->content_history()->orderBy('created_at', 'desc')->get() as $content_history)
+                                    @if($content_history)
+                                    <tr>
+                                        <td>{{$loop->iteration}}</td>
+                                        <td>{{Carbon\Carbon::parse($content_history->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</td>
+                                        <td>
+                                            @if($content_history->content_history_status == __('content_status.content_status_process'))
+                                            <span class="badge badge-pill badge-primary">{{$content_history->content_history_status}}</span>
+                                            @elseif($content_history->content_history_status == __('content_status.content_status_success'))
+                                            <span class="badge badge-pill badge-success">{{$content_history->content_history_status}}</span>
+                                            @elseif($content_history->content_history_status == __('content_status.content_status_failed'))
+                                            <span class="badge badge-pill badge-danger">{{$content_history->content_history_status}}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <p>{{$content_history->content_history_note}}</p>
+                                        </td>
+                                    </tr>
+                                    @else
+                                    <tr>
+                                        <td>No History</td>
+                                    </tr>
+                                    @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+
+                    </div>
+                    <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
             </div>

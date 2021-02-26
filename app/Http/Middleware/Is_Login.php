@@ -21,21 +21,38 @@ class Is_Login
     public function handle($request, Closure $next)
     {
         if (Session::get('user_id') && Session::get('user_role') && Session::get('user_email') && Session::get('user_name') && Session::get('user_image')) {
-            return $next($request);
+            $user = User::where('user_email', Session::get('user_email'))
+                ->where('user_role', Session::get('user_role'))
+                ->where('user_name', Session::get('user_name'))
+                ->where('user_image', Session::get('user_image'))
+                ->count();
+
+            if ($user > 0) {
+                return $next($request);
+            } else {
+                return redirect()->route('logout');
+            }
         } else if (Cookie::get('account') && Cookie::get('access')) {
-            $user = User::firstWhere('user_email', Cookie::get('account'));
+            $user = User::where('user_email', Cookie::get('account'))
+                ->where('user_email', Cookie::get('account'))
+                ->where('user_role', Cookie::get('access'))
+                ->first();
 
-            //Create Session
-            $data = [
-                'user_id' => $user->user_id,
-                'user_name' => $user->user_name,
-                'user_role' => $user->user_role,
-                'user_email' => $user->user_email,
-                'user_image' => $user->user_image
-            ];
+            if ($user) {
+                //Create Session
+                $data = [
+                    'user_id' => $user->user_id,
+                    'user_name' => $user->user_name,
+                    'user_role' => $user->user_role,
+                    'user_email' => $user->user_email,
+                    'user_image' => $user->user_image
+                ];
 
-            Session::put($data);
-            return $next($request);
+                Session::put($data);
+                return $next($request);
+            } else {
+                return redirect()->route('logout');
+            }
         } else {
             Session::flush();
             Cookie::queue(Cookie::forget('account'));

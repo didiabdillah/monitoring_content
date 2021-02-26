@@ -173,7 +173,18 @@
                         @php
                         $role = App\Models\User::where('user_id', Session::get('user_id'))->first()->user_role;
                         @endphp
-                        @if( $role == 'admin')
+
+                        @if($role == 'operator')
+                        <li class="nav-item">
+                            <a href="#" class="nav-link @if(Request::segment(1) == 'contentplus' || Request::segment(2) == 'contentplus') {{'active'}} @endif">
+                                <i class="nav-icon fas fa-copy"></i>
+                                <p>
+                                    Content+
+                                </p>
+                            </a>
+                        </li>
+
+                        @elseif( $role == 'admin')
                         <li class="nav-item">
                             <a href="{{route('operator')}}" class="nav-link @if(Request::segment(1) == 'operator' || Request::segment(2) == 'operator') {{'active'}} @endif">
                                 <i class="nav-icon fas fa-users"></i>
