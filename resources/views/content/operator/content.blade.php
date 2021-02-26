@@ -108,11 +108,19 @@
                                         @endforeach
                                         @elseif($data->content_type=="file")
                                         @foreach($data->content_file()->get() as $file)
+                                        @if($file->content_file_extension == "docx")
                                         <h6>
                                             <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
                                             <a href="{{route('content_file_preview', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
                                             <a href="{{route('content_file_download', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
                                         </h6>
+                                        @else
+                                        <h6>
+                                            <i class="far fa-fw fa-file-image"></i> {{$file->content_file_original_name}}
+                                            <a href="{{route('content_file_preview', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
+                                            <a href="{{route('content_file_download', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
+                                        </h6>
+                                        @endif
                                         @endforeach
                                         @endif
                                     </td>

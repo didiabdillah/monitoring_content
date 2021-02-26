@@ -36,7 +36,7 @@
                     <div class="card-body">
                         <div class="tab-content">
 
-                            <!-- DOMAIN TAB -->
+                            <!-- INSERT FILE -->
                             <div class="active tab-pane" id="file">
                                 <!-- form start -->
                                 <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
@@ -88,7 +88,7 @@
                             </div>
                             <!-- /.tab-pane -->
 
-                            <!-- CHART TAB -->
+                            <!-- INSERT LINK -->
                             <div class="tab-pane" id="link">
                                 <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
                                     @csrf

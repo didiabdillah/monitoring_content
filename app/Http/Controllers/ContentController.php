@@ -47,10 +47,10 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                'file.*'  => 'required|mimes:docx',
+                'file.*'  => 'required|mimes:docx,jpeg,jpg,png,gif',
             ],
             [
-                'file.*.mimes' => 'The document must be a file of type:docx.'
+                'file.*.mimes' => 'The attachment must be a file of type:docx, jpeg, jpg, png, gif'
             ]
         );
 
@@ -59,6 +59,7 @@ class ContentController extends Controller
         $type = "file";
         $user_id = $request->session()->get('user_id');
         $destination_word = "assets/file/word/";
+        $destination_img = "assets/file/img/";
         $destination_pdf = "assets/file/pdf/";
 
         //Insert Data
@@ -86,18 +87,24 @@ class ContentController extends Controller
                     'content_file_extension' => $file->getClientOriginalExtension(),
                 ];
 
-                $file->move($destination_word, $file->hashName());
+                if ($file->getClientOriginalExtension() == "docx") {
 
-                /* Set the PDF Engine Renderer Path */
-                $domPdfPath = base_path('vendor/dompdf/dompdf');
-                \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
-                \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
-                //Load word file
-                $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+                    $file->move($destination_word, $file->hashName());
 
-                //Save it into PDF
-                $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
-                $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                    /* Set the PDF Engine Renderer Path */
+                    $domPdfPath = base_path('vendor/dompdf/dompdf');
+                    \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                    \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                    //Load word file
+                    $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+
+                    //Save it into PDF
+                    $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                    $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                } else {
+
+                    $file->move($destination_img, $file->hashName());
+                }
 
                 Content_file::create($data);
             }
@@ -180,10 +187,10 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                'file.*'  => 'mimes:docx',
+                'file.*'  => 'mimes:docx,jpeg,jpg,png,gif',
             ],
             [
-                'file.*.mimes' => 'The document must be a file of type:docx.'
+                'file.*.mimes' => 'The document must be a file of type:docx, jpeg, jpg, png, gif'
             ]
         );
 
@@ -192,6 +199,8 @@ class ContentController extends Controller
         $user_id = $request->session()->get('user_id');
         $destination_word = "assets/file/word/";
         $destination_pdf = "assets/file/pdf/";
+        $destination_img = "assets/file/img/";
+        $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
         //Insert Data
         $data_content = [
@@ -199,7 +208,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $content->content_type,
             'content_user_id' => $user_id,
-            'content_status' => $content->content_status,
+            'content_status' => $status,
         ];
         Content::where('content_id', $id)
             ->update($data_content);
@@ -221,18 +230,22 @@ class ContentController extends Controller
                         'content_file_extension' => $file->getClientOriginalExtension(),
                     ];
 
-                    $file->move($destination_word, $file->hashName());
+                    if ($extension == "docx") {
+                        $file->move($destination_word, $file->hashName());
 
-                    /* Set the PDF Engine Renderer Path */
-                    $domPdfPath = base_path('vendor/dompdf/dompdf');
-                    \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
-                    \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
-                    //Load word file
-                    $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+                        /* Set the PDF Engine Renderer Path */
+                        $domPdfPath = base_path('vendor/dompdf/dompdf');
+                        \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                        \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                        //Load word file
+                        $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
 
-                    //Save it into PDF
-                    $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
-                    $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                        //Save it into PDF
+                        $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                        $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                    } else {
+                        $file->move($destination_img, $file->hashName());
+                    }
 
                     Content_file::create($data);
                 }
@@ -257,9 +270,14 @@ class ContentController extends Controller
         $user_id = $request->session()->get('user_id');
         $destination_word = "assets/file/word/";
         $destination_pdf = "assets/file/pdf/";
+        $destination_img = "assets/file/img/";
 
-        File::delete(public_path($destination_word . $file->content_file_hash_name));
-        File::delete(public_path($destination_pdf . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+        if ($file->content_file_extension == "docx") {
+            File::delete(public_path($destination_word . $file->content_file_hash_name));
+            File::delete(public_path($destination_pdf . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+        } else {
+            File::delete(public_path($destination_img . $file->content_file_hash_name));
+        }
 
         Content_file::where('content_file_id', $file->content_file_id)->delete();
 
@@ -284,6 +302,7 @@ class ContentController extends Controller
         $note = htmlspecialchars($request->note);
         $user_id = $request->session()->get('user_id');
         $link = htmlspecialchars($request->link);
+        $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
         //Insert Data
         $data_content = [
@@ -291,7 +310,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $content->content_type,
             'content_user_id' => $user_id,
-            'content_status' => $content->content_status,
+            'content_status' => $status,
         ];
         Content::where('content_id', $id)
             ->update($data_content);
@@ -361,8 +380,12 @@ class ContentController extends Controller
             $content_file = Content_file::where('content_file_content_id', $Content->content_id)->get();
 
             foreach ($content_file as $file) {
-                File::delete(public_path('assets/file/word/' . $file->content_file_hash_name));
-                File::delete(public_path('assets/file/pdf/' . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+                if ($file->content_file_extension == "docx") {
+                    File::delete(public_path('assets/file/word/' . $file->content_file_hash_name));
+                    File::delete(public_path('assets/file/pdf/' . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+                } else {
+                    File::delete(public_path('assets/file/img/' . $file->content_file_hash_name));
+                }
             }
 
             Content_file::where('content_file_content_id', $Content->content_id)->delete();
@@ -400,13 +423,23 @@ class ContentController extends Controller
             ->first();
 
         if ($content_file) {
-            $file = public_path("assets/file/word/" . $content_file->content_file_hash_name);
+            if ($content_file->content_file_extension == "docx") {
+                $file = public_path("assets/file/word/" . $content_file->content_file_hash_name);
 
-            $headers = array(
-                'Content-Type' => mime_content_type($file),
-            );
+                $headers = array(
+                    'Content-Type' => mime_content_type($file),
+                );
 
-            return response()->download($file, $content_file->content_file_original_name, $headers);
+                return response()->download($file, $content_file->content_file_original_name, $headers);
+            } else {
+                $file = public_path("assets/file/img/" . $content_file->content_file_hash_name);
+
+                $headers = array(
+                    'Content-Type' => mime_content_type($file),
+                );
+
+                return response()->download($file, $content_file->content_file_original_name, $headers);
+            }
         }
     }
 
@@ -414,12 +447,23 @@ class ContentController extends Controller
     {
         // The location of the PDF file 
         // on the server 
-        $filename = public_path("assets/file/pdf/" . pathinfo($content_file_name, PATHINFO_FILENAME) . ".pdf");
-        $headers = array(
-            'Content-Type' => mime_content_type($filename),
-        );
+        $file_extension = pathinfo($content_file_name, PATHINFO_EXTENSION);
 
-        return response()->file($filename, $headers);
+        if ($file_extension == "docx") {
+            $filename = public_path("assets/file/pdf/" . pathinfo($content_file_name, PATHINFO_FILENAME) . ".pdf");
+            $headers = array(
+                'Content-Type' => mime_content_type($filename),
+            );
+
+            return response()->file($filename, $headers);
+        } else {
+            $filename = public_path("assets/file/img/" . $content_file_name);
+            $headers = array(
+                'Content-Type' => mime_content_type($filename),
+            );
+
+            return response()->file($filename, $headers);
+        }
     }
 
     public function confirm($content_id)
