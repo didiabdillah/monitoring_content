@@ -43,8 +43,45 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- About Me Box -->
                         <div class="card card-primary">
+
+                            <form action="{{route('content_confirm_update', $content->content_id)}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('patch')
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="confirm">Status</label>
+                                        <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
+                                            <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option>
+                                            <option value="{{__('content_status.content_status_success')}}" @if($content->content_status == __('content_status.content_status_success')){{"selected"}}@endif>Accept</option>
+                                            <option value="{{__('content_status.content_status_failed')}}" @if($content->content_status == __('content_status.content_status_failed')){{"selected"}}@endif>Reject</option>
+                                        </select>
+                                        @error('confirm')
+                                        <div class="invalid-feedback">
+                                            Please select status
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="note">Note</label>
+                                        @php // @endphp
+                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_comment}}</textarea>
+                                        @error('note')
+                                        <div class=" invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Confirm</button>
+                                </div>
+                            </form>
 
                             <div class="card-body">
                                 <strong><i class="fas fa-align-center mr-1"></i> Title</strong>
@@ -121,44 +158,6 @@
 
                             </div>
                             <!-- /.card-body -->
-
-                            <form action="{{route('content_confirm_update', $content->content_id)}}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('patch')
-                                <div class="card-body">
-
-                                    <div class="form-group">
-                                        <label for="confirm">Status</label>
-                                        <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
-                                            <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option>
-                                            <option value="{{__('content_status.content_status_success')}}" @if($content->content_status == __('content_status.content_status_success')){{"selected"}}@endif>Accept</option>
-                                            <option value="{{__('content_status.content_status_failed')}}" @if($content->content_status == __('content_status.content_status_failed')){{"selected"}}@endif>Reject</option>
-                                        </select>
-                                        @error('confirm')
-                                        <div class="invalid-feedback">
-                                            Please select status
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="note">Note</label>
-                                        @php // @endphp
-                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_comment}}</textarea>
-                                        @error('note')
-                                        <div class=" invalid-feedback">
-                                            {{$message}}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-
-                                <div class="card-footer">
-                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Update</button>
-                                </div>
-                            </form>
 
                         </div>
                         <!-- /.card -->
