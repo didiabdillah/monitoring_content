@@ -57,11 +57,7 @@
 
                                 <div id="{{$file->content_file_hash_name}}">
                                     <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
-                                    @if($file->content_file_extension == "docx" || $file->content_file_extension == "doc")
-                                    <a href="https://view.officeapps.live.com/op/view.aspx?src={{URL::asset('assets/file/word/' . $file->content_file_hash_name)}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
-                                    @else
                                     <a href="{{route('content_file_preview', [$content->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
-                                    @endif
                                     <button id="{{$file->content_file_id}}" class="ml-1 btn btn-xs btn-danger btn-remove"><i class="fas fa-times"></i></a>
                                 </div>
 

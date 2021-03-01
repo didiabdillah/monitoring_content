@@ -176,7 +176,7 @@
 
                         @if($role == 'operator')
                         <li class="nav-item">
-                            <a href="#" class="nav-link @if(Request::segment(1) == 'contentplus' || Request::segment(2) == 'contentplus') {{'active'}} @endif">
+                            <a href="{{route('content_plus')}}" class="nav-link @if(Request::segment(1) == 'contentplus' || Request::segment(2) == 'contentplus') {{'active'}} @endif">
                                 <i class="nav-icon fas fa-copy"></i>
                                 <p>
                                     Content+

@@ -1,6 +1,6 @@
 @extends('layout.layout_admin')
 
-@section('title', 'Detail Content')
+@section('title', 'Confirm Content')
 
 @section('page')
 
@@ -43,8 +43,45 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- About Me Box -->
                         <div class="card card-primary">
+
+                            <form action="{{route('content_confirm_update', $content->content_id)}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('patch')
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="confirm">Status</label>
+                                        <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
+                                            <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option>
+                                            <option value="{{__('content_status.content_status_success')}}" @if($content->content_status == __('content_status.content_status_success')){{"selected"}}@endif>Accept</option>
+                                            <option value="{{__('content_status.content_status_failed')}}" @if($content->content_status == __('content_status.content_status_failed')){{"selected"}}@endif>Reject</option>
+                                        </select>
+                                        @error('confirm')
+                                        <div class="invalid-feedback">
+                                            Please select status
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="note">Note</label>
+                                        @php // @endphp
+                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_comment}}</textarea>
+                                        @error('note')
+                                        <div class=" invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Confirm</button>
+                                </div>
+                            </form>
 
                             <div class="card-body">
                                 <strong><i class="fas fa-align-center mr-1"></i> Title</strong>
@@ -102,10 +139,10 @@
                                 @elseif($content->content_type=="file")
                                 <strong><i class="fas fa-file-alt mr-1"></i> File</strong><br>
                                 @foreach($content->content_file()->get() as $file)
-                                @if($file->content_file_extension == "docx" || $file->content_file_extension == "doc")
+                                @if($file->content_file_extension == "docx")
                                 <h6>
                                     <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
-                                    <a href="https://view.officeapps.live.com/op/view.aspx?src={{URL::asset('assets/file/word/' . $file->content_file_hash_name)}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
+                                    <a href="{{route('content_file_preview', [$content->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
                                     <a href="{{route('content_file_download', [$content->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
                                 </h6>
                                 @else
@@ -121,71 +158,11 @@
 
                             </div>
                             <!-- /.card-body -->
+
                         </div>
                         <!-- /.card -->
                     </div>
                     <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-
-                <!-- CONTENT HISTORY -->
-                <div class="card">
-                    <div class="card-header border-transparent">
-                        <h3 class="card-title">Content History</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table m-0">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Date, Time</th>
-                                        <th>Status</th>
-                                        <th>Note</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($content->content_history()->orderBy('created_at', 'desc')->get() as $content_history)
-                                    @if($content_history)
-                                    <tr>
-                                        <td>{{$loop->iteration}}</td>
-                                        <td>{{Carbon\Carbon::parse($content_history->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</td>
-                                        <td>
-                                            @if($content_history->content_history_status == __('content_status.content_status_process'))
-                                            <span class="badge badge-pill badge-primary">{{$content_history->content_history_status}}</span>
-                                            @elseif($content_history->content_history_status == __('content_status.content_status_success'))
-                                            <span class="badge badge-pill badge-success">{{$content_history->content_history_status}}</span>
-                                            @elseif($content_history->content_history_status == __('content_status.content_status_failed'))
-                                            <span class="badge badge-pill badge-danger">{{$content_history->content_history_status}}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <p>{{$content_history->content_history_note}}</p>
-                                        </td>
-                                    </tr>
-                                    @else
-                                    <tr>
-                                        <td>No History</td>
-                                    </tr>
-                                    @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.table-responsive -->
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer clearfix">
-
-                    </div>
-                    <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
             </div>

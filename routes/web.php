@@ -94,13 +94,35 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::patch('/edit/{id}/link', 'ContentController@update_link')->name('content_update_link');
             Route::delete('/destroy/{id}', 'ContentController@destroy')->name('content_destroy');
 
-            // Provider Detail
+            // Content Detail
             Route::group(['prefix' => '{content_id}'], function () {
                 Route::get('/', 'ContentController@detail')->name('content_detail');
                 Route::get('/confirm', 'ContentController@confirm')->name('content_confirm');
                 Route::patch('/confirm', 'ContentController@confirm_update')->name('content_confirm_update');
                 Route::get('/download/{content_file_name}', 'ContentController@file_download')->name('content_file_download');
                 Route::get('/preview/{content_file_name}', 'ContentController@file_preview')->name('content_file_preview');
+            });
+        });
+
+        //Content Plus
+        Route::group(['prefix' => 'contentplus'], function () {
+            Route::get('/', 'ContentPlusController@index')->name('content_plus');
+            Route::get('/insert', 'ContentPlusController@insert')->name('content_plus_insert');
+            Route::post('/insert/file', 'ContentPlusController@store_file')->name('content_plus_store_file');
+            Route::post('/insert/link', 'ContentPlusController@store_link')->name('content_plus_store_link');
+            Route::get('/edit/{id}', 'ContentPlusController@edit')->name('content_plus_edit');
+            Route::patch('/edit/{id}/file', 'ContentPlusController@update_file')->name('content_plus_update_file');
+            Route::post('/edit/{id}/file/remove', 'ContentPlusController@update_file_remove')->name('content_plus_update_file_remove');
+            Route::patch('/edit/{id}/link', 'ContentPlusController@update_link')->name('content_plus_update_link');
+            Route::delete('/destroy/{id}', 'ContentPlusController@destroy')->name('content_plus_destroy');
+
+            // Content Plus Detail
+            Route::group(['prefix' => '{content_id}'], function () {
+                Route::get('/', 'ContentPlusController@detail')->name('content_plus_detail');
+                Route::get('/confirm', 'ContentPlusController@confirm')->name('content_plus_confirm');
+                Route::patch('/confirm', 'ContentPlusController@confirm_update')->name('content_plus_confirm_update');
+                Route::get('/download/{content_file_name}', 'ContentPlusController@file_download')->name('content_plus_file_download');
+                Route::get('/preview/{content_file_name}', 'ContentPlusController@file_preview')->name('content_plus_file_preview');
             });
         });
     });

@@ -102,10 +102,10 @@
                                 @elseif($content->content_type=="file")
                                 <strong><i class="fas fa-file-alt mr-1"></i> File</strong><br>
                                 @foreach($content->content_file()->get() as $file)
-                                @if($file->content_file_extension == "docx" || $file->content_file_extension == "doc")
+                                @if($file->content_file_extension == "docx")
                                 <h6>
                                     <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
-                                    <a href="https://view.officeapps.live.com/op/view.aspx?src={{URL::asset('assets/file/word/' . $file->content_file_hash_name)}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
+                                    <a href="{{route('content_file_preview', [$content->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
                                     <a href="{{route('content_file_download', [$content->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
                                 </h6>
                                 @else

@@ -28,16 +28,6 @@
             </div>
         </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 col-sm-3 col-md-3">
-                    <a href="{{route('content_insert')}}" class="btn btn-primary btn-md mb-3 btn-block"><i class="fas fa-plus"></i> Insert a new Content</a>
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
-        </div>
-
         <!--Content -->
         <section class="content">
             <div class="container-fluid">
@@ -58,6 +48,7 @@
                                     <th>No</th>
                                     <th>Title</th>
                                     <th>Type</th>
+                                    <th>Owner</th>
                                     <th>Status</th>
                                     <th>Date, Time</th>
                                     <th>Content</th>
@@ -78,6 +69,10 @@
 
                                     <td>
                                         <h6>{{$data->content_type}}</h6>
+                                    </td>
+
+                                    <td>
+                                        <h6>{{$data->user_name}}</h6>
                                     </td>
 
                                     <td>
@@ -108,10 +103,10 @@
                                         @endforeach
                                         @elseif($data->content_type=="file")
                                         @foreach($data->content_file()->get() as $file)
-                                        @if($file->content_file_extension == "docx" || $file->content_file_extension == "doc")
+                                        @if($file->content_file_extension == "docx")
                                         <h6>
                                             <i class="far fa-fw fa-file-word"></i> {{$file->content_file_original_name}}
-                                            <a href="https://view.officeapps.live.com/op/view.aspx?src={{URL::asset('assets/file/word/' . $file->content_file_hash_name)}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
+                                            <a href="{{route('content_file_preview', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-primary" target="_blank"><i class="fas fa-eye"></i></a>
                                             <a href="{{route('content_file_download', [$data->content_id,$file->content_file_hash_name])}}" class="ml-1 btn btn-xs btn-success"><i class="fas fa-cloud-download-alt"></i></a>
                                         </h6>
                                         @else
@@ -136,18 +131,14 @@
 
                                                     Detail
                                                 </a>
-                                                <a class="btn btn-primary btn-sm" href="{{route('content_edit', $data->content_id)}}">
-                                                    <i class="fas fa-pencil-alt">
+
+                                                <a class="btn btn-primary btn-sm" href="{{route('content_confirm', $data->content_id)}}">
+                                                    <i class="fas fa-clipboard-check">
                                                     </i>
 
-                                                    Edit
+                                                    Confirm
                                                 </a>
-                                                <button class="btn btn-danger btn-sm btn-remove" type="submit">
-                                                    <i class="fas fa-trash">
-                                                    </i>
 
-                                                    Remove
-                                                </button>
                                             </div>
                                         </form>
                                     </td>

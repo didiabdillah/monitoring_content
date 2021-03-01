@@ -12,7 +12,7 @@ use App\Models\Content_file;
 use App\Models\Content_history;
 use App\Models\Content_link;
 
-class ContentController extends Controller
+class ContentPlusController extends Controller
 {
     //content List
     public function index()
@@ -24,14 +24,14 @@ class ContentController extends Controller
                 ->join('users', 'contents.content_user_id', '=', 'users.user_id')
                 ->orderBy('updated_at', 'desc')->get();
 
-            return view('content.admin.content', ['content' => $content]);
+            return view('content_plus.admin.content_plus', ['content' => $content]);
         } else if ($user_role == "operator") {
             $content = Content::select('contents.*', 'users.user_name')
                 ->join('users', 'contents.content_user_id', '=', 'users.user_id')
                 ->where('contents.content_user_id', Session::get('user_id'))
                 ->orderBy('created_at', 'desc')->get();
 
-            return view('content.operator.content', ['content' => $content]);
+            return view('content_plus.operator.content_plus', ['content' => $content]);
         }
     }
 
@@ -47,10 +47,10 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
+                'file.*'  => 'required|mimes:docx,jpeg,jpg,png,gif',
             ],
             [
-                'file.*.mimes' => 'The attachment must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                'file.*.mimes' => 'The attachment must be a file of type:docx, jpeg, jpg, png, gif'
             ]
         );
 
@@ -87,20 +87,20 @@ class ContentController extends Controller
                     'content_file_extension' => $file->getClientOriginalExtension(),
                 ];
 
-                if ($file->getClientOriginalExtension() == "docx" || $file->getClientOriginalExtension() == "doc") {
+                if ($file->getClientOriginalExtension() == "docx") {
 
                     $file->move($destination_word, $file->hashName());
 
-                    // /* Set the PDF Engine Renderer Path */
-                    // $domPdfPath = base_path('vendor/dompdf/dompdf');
-                    // \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
-                    // \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
-                    // //Load word file
-                    // $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+                    /* Set the PDF Engine Renderer Path */
+                    $domPdfPath = base_path('vendor/dompdf/dompdf');
+                    \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                    \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                    //Load word file
+                    $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
 
-                    // //Save it into PDF
-                    // $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
-                    // $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                    //Save it into PDF
+                    $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                    $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
                 } else {
 
                     $file->move($destination_img, $file->hashName());
@@ -187,10 +187,10 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
-                'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
+                'file.*'  => 'mimes:docx,jpeg,jpg,png,gif',
             ],
             [
-                'file.*.mimes' => 'The document must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                'file.*.mimes' => 'The document must be a file of type:docx, jpeg, jpg, png, gif'
             ]
         );
 
@@ -230,19 +230,19 @@ class ContentController extends Controller
                         'content_file_extension' => $file->getClientOriginalExtension(),
                     ];
 
-                    if ($extension == "docx" || $extension == "doc") {
+                    if ($extension == "docx") {
                         $file->move($destination_word, $file->hashName());
 
-                        // /* Set the PDF Engine Renderer Path */
-                        // $domPdfPath = base_path('vendor/dompdf/dompdf');
-                        // \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
-                        // \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
-                        // //Load word file
-                        // $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
+                        /* Set the PDF Engine Renderer Path */
+                        $domPdfPath = base_path('vendor/dompdf/dompdf');
+                        \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+                        \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
+                        //Load word file
+                        $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
 
-                        // //Save it into PDF
-                        // $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
-                        // $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
+                        //Save it into PDF
+                        $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+                        $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
                     } else {
                         $file->move($destination_img, $file->hashName());
                     }
@@ -272,9 +272,9 @@ class ContentController extends Controller
         $destination_pdf = "assets/file/pdf/";
         $destination_img = "assets/file/img/";
 
-        if ($file->content_file_extension == "docx" || $file->content_file_extension == "doc") {
+        if ($file->content_file_extension == "docx") {
             File::delete(public_path($destination_word . $file->content_file_hash_name));
-            // File::delete(public_path($destination_pdf . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+            File::delete(public_path($destination_pdf . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
         } else {
             File::delete(public_path($destination_img . $file->content_file_hash_name));
         }
@@ -380,9 +380,9 @@ class ContentController extends Controller
             $content_file = Content_file::where('content_file_content_id', $Content->content_id)->get();
 
             foreach ($content_file as $file) {
-                if ($file->content_file_extension == "docx" || $file->content_file_extension == "doc") {
+                if ($file->content_file_extension == "docx") {
                     File::delete(public_path('assets/file/word/' . $file->content_file_hash_name));
-                    // File::delete(public_path('assets/file/pdf/' . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
+                    File::delete(public_path('assets/file/pdf/' . pathinfo($file->content_file_hash_name, PATHINFO_FILENAME) . '.pdf'));
                 } else {
                     File::delete(public_path('assets/file/img/' . $file->content_file_hash_name));
                 }
@@ -423,7 +423,7 @@ class ContentController extends Controller
             ->first();
 
         if ($content_file) {
-            if ($content_file->content_file_extension == "docx" || $content_file->content_file_extension == "doc") {
+            if ($content_file->content_file_extension == "docx") {
                 $file = public_path("assets/file/word/" . $content_file->content_file_hash_name);
 
                 $headers = array(
@@ -449,7 +449,7 @@ class ContentController extends Controller
         // on the server 
         $file_extension = pathinfo($content_file_name, PATHINFO_EXTENSION);
 
-        if ($file_extension == "docx" || $file_extension == "doc") {
+        if ($file_extension == "docx") {
             $filename = public_path("assets/file/pdf/" . pathinfo($content_file_name, PATHINFO_FILENAME) . ".pdf");
             $headers = array(
                 'Content-Type' => mime_content_type($filename),
