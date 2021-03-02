@@ -81,9 +81,15 @@
 
                                 <hr>
 
-                                <strong><i class="fas fa-calendar-alt mr-1"></i> Date, Time</strong>
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Uploaded</strong>
+                                <br>
+                                <h4> <span class="badge badge-secondary">{{Carbon\Carbon::parse($content->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
 
-                                <p class="text-muted"> {{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Last Update</strong>
+                                <br>
+                                <h4> <span class="badge badge-warning">{{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
 
                                 <hr>
 

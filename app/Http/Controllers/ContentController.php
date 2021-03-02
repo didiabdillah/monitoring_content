@@ -20,7 +20,7 @@ class ContentController extends Controller
         $user_role = Session::get('user_role');
 
         if ($user_role == "admin") {
-            $content = Content::select('contents.*', 'users.user_name')
+            $content = Content::select('contents.*', 'users.user_name', 'users.user_id')
                 ->join('users', 'contents.content_user_id', '=', 'users.user_id')
                 ->orderBy('updated_at', 'desc')->get();
 
@@ -29,7 +29,7 @@ class ContentController extends Controller
             $content = Content::select('contents.*', 'users.user_name')
                 ->join('users', 'contents.content_user_id', '=', 'users.user_id')
                 ->where('contents.content_user_id', Session::get('user_id'))
-                ->orderBy('created_at', 'desc')->get();
+                ->orderBy('updated_at', 'desc')->get();
 
             return view('content.operator.content', ['content' => $content]);
         }
@@ -43,21 +43,36 @@ class ContentController extends Controller
     public function store_file(Request $request)
     {
         // Input Validation
-        $request->validate(
-            [
-                'title'  => 'required|max:255',
-                'note'  => 'max:60000',
-                'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
-            ],
-            [
-                'file.*.mimes' => 'The attachment must be a file of type:doc, docx, jpeg, jpg, png, gif'
-            ]
-        );
+        if ($request->date) {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'date'  => 'required',
+                    'note'  => 'max:60000',
+                    'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
+                ],
+                [
+                    'file.*.mimes' => 'The attachment must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                ]
+            );
+        } else {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
+                ],
+                [
+                    'file.*.mimes' => 'The attachment must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                ]
+            );
+        }
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
         $type = "file";
         $user_id = $request->session()->get('user_id');
+        $date = ($request->date) ? $request->date : date('Y-m-d');
         $destination_word = "assets/file/word/";
         $destination_img = "assets/file/img/";
         $destination_pdf = "assets/file/pdf/";
@@ -67,6 +82,7 @@ class ContentController extends Controller
             'content_title' => $title,
             'content_note' => $note,
             'content_type' => $type,
+            'content_date' => $date,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
         ];
@@ -122,17 +138,29 @@ class ContentController extends Controller
     public function store_link(Request $request)
     {
         // Input Validation
-        $request->validate(
-            [
-                'title'  => 'required|max:255',
-                'note'  => 'max:60000',
-                'link'  => 'required|max:255',
-            ]
-        );
+        if ($request->date) {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'date'  => 'required',
+                    'link'  => 'required|max:255',
+                ]
+            );
+        } else {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'link'  => 'required|max:255',
+                ]
+            );
+        }
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
         $type = "link";
+        $date = ($request->date) ? $request->date : date('Y-m-d');
         $user_id = $request->session()->get('user_id');
         $link = htmlspecialchars($request->link);
 
@@ -141,6 +169,7 @@ class ContentController extends Controller
             'content_title' => $title,
             'content_note' => $note,
             'content_type' => $type,
+            'content_date' => $date,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
         ];
@@ -187,6 +216,7 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
+                'date'  => 'required',
                 'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
             ],
             [
@@ -294,6 +324,7 @@ class ContentController extends Controller
             [
                 'title'  => 'required|max:255',
                 'note'  => 'max:60000',
+                'date'  => 'required',
                 'link'  => 'required|max:255',
             ]
         );
@@ -333,44 +364,6 @@ class ContentController extends Controller
 
         return redirect()->route('content');
     }
-
-    // public function update(Request $request, $id)
-    // {
-    //     // Input Validation
-    //     $request->validate([
-    //         'provider'  => 'required|max:255',
-    //     ]);
-
-    //     $provider = htmlspecialchars($request->provider);
-
-    //     //check is provider exist in DB
-    //     if (Provider::where('provider_name', $provider)->where('provider_id', '!=', $id)->count() > 0) {
-    //         //Flash Message
-    //         flash_alert(
-    //             __('alert.icon_error'), //Icon
-    //             'Update Failed', //Alert Message 
-    //             'Provider Name Already Exist' //Sub Alert Message
-    //         );
-
-    //         return redirect()->back();
-    //     }
-
-    //     //Insert Data
-    //     $data = [
-    //         'provider_name' => $provider,
-    //     ];
-    //     Provider::where('provider_id', $id)
-    //         ->update($data);
-
-    //     //Flash Message
-    //     flash_alert(
-    //         __('alert.icon_success'), //Icon
-    //         'Update Success', //Alert Message 
-    //         'Provider Name Updated' //Sub Alert Message
-    //     );
-
-    //     return redirect()->route('provider');
-    // }
 
     public function destroy($id)
     {

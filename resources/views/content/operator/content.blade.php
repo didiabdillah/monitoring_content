@@ -59,7 +59,7 @@
                                     <th>Title</th>
                                     <th>Type</th>
                                     <th>Status</th>
-                                    <th>Date, Time</th>
+                                    <th>Timestamps</th>
                                     <th>Content</th>
                                     <th>Options</th>
                                 </tr>
@@ -98,7 +98,8 @@
                                     </td>
 
                                     <td>
-                                        <h6>{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</h6>
+                                        <h6>Uploaded : <span class="badge badge-secondary">{{Carbon\Carbon::parse($data->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        <h6>Last Update : <span class="badge badge-warning">{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
                                     </td>
 
                                     <td>

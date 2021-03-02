@@ -37,6 +37,16 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{$content->content_date}}">
+                                @error('date')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
                                 <label for="note">Note</label>
                                 <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_note}}</textarea>
                                 @error('note')
