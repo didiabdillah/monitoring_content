@@ -99,7 +99,9 @@
 
                                     <td>
                                         <h6>Uploaded : <span class="badge badge-secondary">{{Carbon\Carbon::parse($data->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        @if($data->updated_at != $data->created_at)
                                         <h6>Last Update : <span class="badge badge-warning">{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        @endif
                                     </td>
 
                                     <td>

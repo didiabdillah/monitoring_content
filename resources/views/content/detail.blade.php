@@ -86,13 +86,13 @@
                                 <h4> <span class="badge badge-secondary">{{Carbon\Carbon::parse($content->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
 
                                 <hr>
-
+                                @if($content->updated_at != $content->created_at)
                                 <strong><i class="fas fa-calendar-alt mr-1"></i> Last Update</strong>
                                 <br>
                                 <h4> <span class="badge badge-warning">{{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
 
                                 <hr>
-
+                                @endif
                                 <strong><i class="fas fa-sticky-note mr-1"></i> Note</strong>
 
                                 <p class="text-muted"> {{$content->content_note}}</p>

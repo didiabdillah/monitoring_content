@@ -118,11 +118,18 @@
 
                                 <hr>
 
-                                <strong><i class="fas fa-calendar-alt mr-1"></i> Date, Time</strong>
-
-                                <p class="text-muted"> {{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</p>
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Uploaded</strong>
+                                <br>
+                                <h4> <span class="badge badge-secondary">{{Carbon\Carbon::parse($content->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
 
                                 <hr>
+                                @if($content->updated_at != $content->created_at)
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Last Update</strong>
+                                <br>
+                                <h4> <span class="badge badge-warning">{{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
+
+                                <hr>
+                                @endif
 
                                 <strong><i class="fas fa-sticky-note mr-1"></i> Note</strong>
 
@@ -175,53 +182,6 @@
 
 <!-- Custom Javascript For This Page -->
 @push('plugin')
-<script>
-    // --------------
-    // Delete Button
-    // --------------
-    $('.btn-remove').on('click', function(e) {
-        e.preventDefault();
-        var form = $(this).parents('form');
-        swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
-    });
-</script>
 
-<!-- DataTables  & Plugins -->
-<script src="{{URL::asset('assets/js/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-buttons/js/buttons.html5.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-buttons/js/buttons.print.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-
-<script>
-    $(function() {
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "pagingType": "simple_numbers",
-        });
-    });
-</script>
 
 @endpush
