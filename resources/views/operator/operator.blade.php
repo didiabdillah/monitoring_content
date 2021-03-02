@@ -88,6 +88,13 @@
                                             @csrf
                                             @method('delete')
                                             <div class="card-body">
+                                                <a class="btn btn-success btn-sm" href="{{route('operator_detail', $data->user_id)}}">
+                                                    <i class="fas fa-folder">
+                                                    </i>
+
+                                                    Detail
+                                                </a>
+
                                                 <a class="btn btn-primary btn-sm" href="{{route('operator_edit', $data->user_id)}}">
                                                     <i class="fas fa-pencil-alt">
                                                     </i>

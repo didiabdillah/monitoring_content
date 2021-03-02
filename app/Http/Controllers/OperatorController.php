@@ -199,4 +199,12 @@ class OperatorController extends Controller
 
         return redirect()->route('operator');
     }
+
+    //Operator Detail
+    public function detail($id)
+    {
+        $user = User::where('user_id', $id)->first();
+
+        return view('operator.detail', ['user' => $user]);
+    }
 }
