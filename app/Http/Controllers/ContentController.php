@@ -195,34 +195,51 @@ class ContentController extends Controller
     public function edit($id)
     {
         $content = Content::find($id);
+        $date = date('Y-m-d', strtotime($content->created_at));
 
         if ($content->content_type == "file") {
-            return view('content.operator.edit_file', ['content' => $content]);
+
+            return view('content.operator.edit_file', ['content' => $content, 'date' => $date]);
         } else if ($content->content_type == "link") {
+
+
             foreach ($content->content_link()->get() as $link) {
                 $content_link = $link->content_link_url;
             }
-            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link]);
+            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link, 'date' => $date]);
         }
     }
 
     public function update_file(Request $request, $id)
     {
+        // Input Validation
+        if ($request->date) {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'date'  => 'required',
+                    'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
+                ],
+                [
+                    'file.*.mimes' => 'The document must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                ]
+            );
+        } else {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
+                ],
+                [
+                    'file.*.mimes' => 'The document must be a file of type:doc, docx, jpeg, jpg, png, gif'
+                ]
+            );
+        }
+
         $content = Content::find($id);
         // $content_files = Content_file::where('content_file_content_id', $id)->get();
-
-        // Input Validation
-        $request->validate(
-            [
-                'title'  => 'required|max:255',
-                'note'  => 'max:60000',
-                'date'  => 'required',
-                'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
-            ],
-            [
-                'file.*.mimes' => 'The document must be a file of type:doc, docx, jpeg, jpg, png, gif'
-            ]
-        );
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
@@ -233,13 +250,25 @@ class ContentController extends Controller
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
         //Insert Data
-        $data_content = [
-            'content_title' => $title,
-            'content_note' => $note,
-            'content_type' => $content->content_type,
-            'content_user_id' => $user_id,
-            'content_status' => $status,
-        ];
+        if ($request->date) {
+            $data_content = [
+                'content_title' => $title,
+                'content_note' => $note,
+                'content_date' => $request->date,
+                'content_type' => $content->content_type,
+                'content_user_id' => $user_id,
+                'content_status' => $status,
+            ];
+        } else {
+            $data_content = [
+                'content_title' => $title,
+                'content_note' => $note,
+                'content_type' => $content->content_type,
+                'content_user_id' => $user_id,
+                'content_status' => $status,
+            ];
+        }
+
         Content::where('content_id', $id)
             ->update($data_content);
 
@@ -316,18 +345,28 @@ class ContentController extends Controller
 
     public function update_link(Request $request, $id)
     {
+        // Input Validation
+        if ($request->date) {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'date'  => 'required',
+                    'link'  => 'required|max:255',
+                ]
+            );
+        } else {
+            $request->validate(
+                [
+                    'title'  => 'required|max:255',
+                    'note'  => 'max:60000',
+                    'link'  => 'required|max:255',
+                ]
+            );
+        }
+
         $content = Content::find($id);
         $content_links = Content_link::where('content_link_content_id', $id)->get();
-
-        // Input Validation
-        $request->validate(
-            [
-                'title'  => 'required|max:255',
-                'note'  => 'max:60000',
-                'date'  => 'required',
-                'link'  => 'required|max:255',
-            ]
-        );
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
@@ -336,13 +375,25 @@ class ContentController extends Controller
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
         //Insert Data
-        $data_content = [
-            'content_title' => $title,
-            'content_note' => $note,
-            'content_type' => $content->content_type,
-            'content_user_id' => $user_id,
-            'content_status' => $status,
-        ];
+        if ($request->date) {
+            $data_content = [
+                'content_title' => $title,
+                'content_note' => $note,
+                'content_type' => $content->content_type,
+                'content_date' => $request->date,
+                'content_user_id' => $user_id,
+                'content_status' => $status,
+            ];
+        } else {
+            $data_content = [
+                'content_title' => $title,
+                'content_note' => $note,
+                'content_type' => $content->content_type,
+                'content_user_id' => $user_id,
+                'content_status' => $status,
+            ];
+        }
+
         Content::where('content_id', $id)
             ->update($data_content);
 

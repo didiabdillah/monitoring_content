@@ -36,6 +36,7 @@
                                 @enderror
                             </div>
 
+                            @if($content->content_date != $date)
                             <div class="form-group">
                                 <label for="date">Date</label>
                                 <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{$content->content_date}}">
@@ -45,6 +46,7 @@
                                 </div>
                                 @enderror
                             </div>
+                            @endif
 
                             <div class="form-group">
                                 <label for="note">Note</label>
