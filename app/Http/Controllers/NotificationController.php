@@ -21,4 +21,18 @@ class NotificationController extends Controller
 
         return view('notification.notification', ['notification' => $notification]);
     }
+
+    public function destroy($id)
+    {
+        Notification::destroy('notification_id', $id);
+
+        //Flash Message
+        flash_alert(
+            __('alert.icon_success'), //Icon
+            'Delete Success', //Alert Message 
+            'Notification Deleted' //Sub Alert Message
+        );
+
+        return redirect()->route('notification');
+    }
 }

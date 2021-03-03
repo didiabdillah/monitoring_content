@@ -49,7 +49,10 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
         Route::get('/notfound', 'ErrorController@not_found')->name('not_found');
 
         //Notification
-        Route::get('/notification', 'NotificationController@index')->name('notification');
+        Route::group(['prefix' => 'notification'], function () {
+            Route::get('/', 'NotificationController@index')->name('notification');
+            Route::delete('/{id}/destroy', 'NotificationController@destroy')->name('notification_destroy');
+        });
 
         //FOR ADMIN ONLY
         Route::group(['middleware' => ['is_Admin']], function () {

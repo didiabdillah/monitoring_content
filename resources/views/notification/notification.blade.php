@@ -30,7 +30,25 @@
                                     <h3 class="timeline-header"><b>Admin</b></h3>
 
                                     <div class="timeline-body">
-                                        {!!$notif->notification_detail!!}
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                {!!$notif->notification_detail!!}
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <form action="{{route('notification_destroy', $notif->notification_id)}}" method="POST" class="form-inline form-horizontal float-right">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btn-danger btn-xs btn-remove" type="submit">
+                                                        <i class="fas fa-times">
+                                                        </i>
+
+                                                        Remove
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -50,3 +68,29 @@
 </div>
 <!-- /.content-wrapper -->
 @endsection
+
+@push('plugin')
+<script>
+    // --------------
+    // Delete Button
+    // --------------
+    $('.btn-remove').on('click', function(e) {
+        e.preventDefault();
+        var form = $(this).parents('form');
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+</script>
+
+@endpush
