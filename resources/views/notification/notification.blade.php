@@ -27,24 +27,10 @@
                                 <i class="fas fa-bell bg-blue"></i>
                                 <div class="timeline-item">
                                     <span class="time"><i class="fas fa-clock"></i> {{Carbon\Carbon::parse($notif->notification_date)->isoFormat('dddd, D MMMM Y')}}</span>
-                                    <h3 class="timeline-header"><b>Please Fill The Data For This Month !!!</b></h3>
+                                    <h3 class="timeline-header"><b>Admin</b></h3>
 
                                     <div class="timeline-body">
-                                        <strong>Provider : </strong>{{$notif->notification_provider}}
-                                        <br>
-                                        @if($notif->notification_detail_domain)
-                                        <strong>Domain : </strong>
-                                        <ul>
-                                            {!! $notif->notification_detail_domain !!}
-                                        </ul>
-                                        @endif
-
-                                        @if($notif->notification_detail_hosting != NULL)
-                                        <strong>Hosting : </strong>
-                                        <ul>
-                                            {!! $notif->notification_detail_hosting !!}
-                                        </ul>
-                                        @endif
+                                        {!!$notif->notification_detail!!}
                                     </div>
                                 </div>
                             </div>

@@ -44,19 +44,20 @@ class HomeController extends Controller
             $user_register_interval = $this->countIntervalUserDays($userId);
 
 
-
             $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
             $today_uploaded = Content::where('content_user_id', $userId)
-                ->where('content_status', __('content_status.content_status_success'))
-                ->whereBetween('updated_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
+                // ->where('content_status', __('content_status.content_status_success'))
+                ->where('content_date', date('Y-m-d'))
+                ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])
+                ->count();
 
-            $today_upload_remaining = NULL;
+            $today_upload_remaining = $daily_target->target - $today_uploaded;
 
-            if ($today_uploaded == 0) {
-                $today_upload_remaining = $daily_target->target;
-            } else {
-                $today_upload_remaining = $daily_target->target - $today_uploaded;
-            }
+            // if ($today_uploaded == 0) {
+            //     $today_upload_remaining = $daily_target->target;
+            // } else {
+            //     $today_upload_remaining = $daily_target->target - $today_uploaded;
+            // }
 
             return view('home.operator.home', ['daily_target' => $daily_target->target, 'today_upload_remaining' => $today_upload_remaining]);
         }

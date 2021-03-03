@@ -11,6 +11,7 @@ use App\Models\Content;
 use App\Models\Content_file;
 use App\Models\Content_history;
 use App\Models\Content_link;
+use App\Models\Notification;
 
 class ContentController extends Controller
 {
@@ -535,6 +536,7 @@ class ContentController extends Controller
         );
 
         $user_id = $request->session()->get('user_id');
+        $notification_user_id = $content->content_user_id;
         $confirm = htmlspecialchars($request->confirm);
         $note = htmlspecialchars($request->note);
 
@@ -551,6 +553,24 @@ class ContentController extends Controller
             'content_history_note' => $note,
         ];
         Content_history::create($data_content);
+
+        // Insert Notification
+        $message = NULL;
+        if ($confirm == __('content_status.content_status_success')) {
+            $message = '<span class="badge badge-pill badge-success">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+        } else if ($confirm == __('content_status.content_status_failed')) {
+            $message = '<span class="badge badge-pill badge-danger">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+        } else if ($confirm == __('content_status.content_status_process')) {
+            $message = '<span class="badge badge-pill badge-primary">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+        }
+
+        $data_notif = [
+            'notification_user_id' => $notification_user_id,
+            'notification_detail' => $message,
+            'notification_status' => 0,
+            'notification_date' => date('Y-m-d')
+        ];
+        Notification::create($data_notif);
 
         //Flash Message
         flash_alert(

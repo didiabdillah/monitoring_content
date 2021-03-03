@@ -53,7 +53,8 @@
                                     <div class="form-group">
                                         <label for="confirm">Status</label>
                                         <select class="form-control select2 @error('confirm') is-invalid @enderror" data-placeholder="Select Confirm Status" style="width: 100%;" name="confirm">
-                                            <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option>
+                                            <option value="">Select Status...</option>
+                                            {{-- <option value="{{__('content_status.content_status_process')}}" @if($content->content_status == __('content_status.content_status_process')){{"selected"}}@endif>Process</option> --}}
                                             <option value="{{__('content_status.content_status_success')}}" @if($content->content_status == __('content_status.content_status_success')){{"selected"}}@endif>Accept</option>
                                             <option value="{{__('content_status.content_status_failed')}}" @if($content->content_status == __('content_status.content_status_failed')){{"selected"}}@endif>Reject</option>
                                         </select>
