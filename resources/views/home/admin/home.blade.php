@@ -135,20 +135,13 @@
             themeSystem: 'bootstrap',
             //Random default events
             events: [{
-                    title: 'All Day Event',
-                    start: '2021-03-01',
-                    backgroundColor: '#f56954', //red
-                    borderColor: '#f56954', //red
-                    allDay: true
-                },
-                {
-                    title: 'Meeting',
-                    start: '2021-03-02 20:30:21',
-                    allDay: false,
-                    backgroundColor: '#0073b7', //Blue
-                    borderColor: '#0073b7' //Blue
-                }
-            ],
+                title: 'All Day Event',
+                start: '2021-03-01',
+                backgroundColor: '#f56954', //red
+                borderColor: '#f56954', //red
+                url: 'https://www.google.com/',
+                allDay: true
+            }],
             editable: false,
             droppable: false, // this allows things to be dropped onto the calendar !!!
             drop: function(info) {

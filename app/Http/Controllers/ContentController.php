@@ -557,11 +557,11 @@ class ContentController extends Controller
         // Insert Notification
         $message = NULL;
         if ($confirm == __('content_status.content_status_success')) {
-            $message = '<span class="badge badge-pill badge-success">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+            $message = 'Admin <span class="badge badge-pill badge-success">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
         } else if ($confirm == __('content_status.content_status_failed')) {
-            $message = '<span class="badge badge-pill badge-danger">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+            $message = 'Admin <span class="badge badge-pill badge-danger">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
         } else if ($confirm == __('content_status.content_status_process')) {
-            $message = '<span class="badge badge-pill badge-primary">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
+            $message = 'Admin <span class="badge badge-pill badge-primary">' . $confirm . '</span> Your <a href="' . route('content_detail', $id) . '">Submited Content</a>';
         }
 
         $data_notif = [

@@ -54,6 +54,11 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::delete('/{id}/destroy', 'NotificationController@destroy')->name('notification_destroy');
         });
 
+        //Calendar
+        Route::group(['prefix' => 'calendar'], function () {
+            Route::delete('/{id}/detail', 'CalendarController@detail')->name('calendar_detail');
+        });
+
         //FOR ADMIN ONLY
         Route::group(['middleware' => ['is_Admin']], function () {
             //Setting

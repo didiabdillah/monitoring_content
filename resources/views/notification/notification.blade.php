@@ -27,7 +27,7 @@
                                 <i class="fas fa-bell bg-blue"></i>
                                 <div class="timeline-item">
                                     <span class="time"><i class="fas fa-clock"></i> {{Carbon\Carbon::parse($notif->notification_date)->isoFormat('dddd, D MMMM Y')}}</span>
-                                    <h3 class="timeline-header"><b>Admin</b></h3>
+                                    <h3 class="timeline-header"><b>System</b></h3>
 
                                     <div class="timeline-body">
                                         <div class="row">
