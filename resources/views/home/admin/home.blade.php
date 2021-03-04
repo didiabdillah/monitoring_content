@@ -61,6 +61,7 @@
                     <!-- ./col -->
                 </div>
 
+                {{--
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -79,7 +80,7 @@
                         <!-- /.row -->
                     </div>
                 </div>
-
+                --}}
             </div>
         </section>
 </div>
@@ -100,6 +101,7 @@
     });
 </script>
 
+{{--
 <script src="{{URL::asset('assets/js/moment/moment.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/fullcalendar/main.js')}}"></script>
 
@@ -160,5 +162,5 @@
 
     });
 </script>
-
+--}}
 @endpush

@@ -37,7 +37,7 @@ class HomeController extends Controller
 
         if ($role == "admin") {
             $total_target = User::select(User::raw('SUM(user_daily_target) as total_target'))->first();
-            $total_user = User::count();
+            $total_user = User::where('user_role', '!=', 'admin')->count();
 
             return view('home.admin.home', ['total_target' => $total_target->total_target, 'total_user' => $total_user]);
         } else if ($role == "operator") {

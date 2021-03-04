@@ -45,7 +45,7 @@
                         <!-- small card -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>3434</h3>
+                                <h3>0</h3>
 
                                 <p>Total Upload Missed</p>
                             </div>
@@ -73,7 +73,7 @@
                         <!-- small card -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>43434</h3>
+                                <h3>0</h3>
 
                                 <p>Missed Day</p>
                             </div>

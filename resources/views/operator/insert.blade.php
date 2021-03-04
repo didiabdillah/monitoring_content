@@ -47,7 +47,7 @@
 
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Phone Number" value="{{old('phone')}}">
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="08xxxxxxxxxx" value="{{old('phone')}}">
                                 @error('phone')
                                 <div class="invalid-feedback">
                                     {{$message}}

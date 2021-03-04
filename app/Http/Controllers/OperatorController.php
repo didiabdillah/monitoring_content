@@ -15,7 +15,8 @@ class OperatorController extends Controller
     //Operator
     public function index()
     {
-        $user = User::where('user_id', '!=', Session::get('user_id'))->orderBy('user_name', 'asc')->get();
+        $user = User::where('user_role', '!=', 'admin')
+            ->where('user_id', '!=', Session::get('user_id'))->orderBy('user_name', 'asc')->get();
 
         return view('operator.operator', ['user' => $user]);
     }

@@ -42,18 +42,23 @@ class every_5pm extends Command
     {
         $users = User::where('user_role', 'operator')->get();
 
-        foreach ($users as $user) {
-            $content = Content::where('content_user_id', $user->user_id)
-                ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
 
-            if ($content < $user->user_daily_target) {
-                $data = [
-                    'missed_upload_user_id' => $user->user_id,
-                    'missed_upload_date' => date('Y-m-d'),
-                    'missed_upload_total' => $user->user_daily_target - $content,
-                ];
+        if (date('N') == 6 || date('N') == 7) {
+            // Nothing
+        } else {
+            foreach ($users as $user) {
+                $content = Content::where('content_user_id', $user->user_id)
+                    ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
 
-                Missed_upload::create($data);
+                if ($content < $user->user_daily_target) {
+                    $data = [
+                        'missed_upload_user_id' => $user->user_id,
+                        'missed_upload_date' => date('Y-m-d'),
+                        'missed_upload_total' => $user->user_daily_target - $content,
+                    ];
+
+                    Missed_upload::create($data);
+                }
             }
         }
     }

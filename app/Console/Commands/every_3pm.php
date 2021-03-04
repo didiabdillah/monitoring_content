@@ -42,20 +42,24 @@ class every_3pm extends Command
     {
         $users = User::where('user_role', 'operator')->get();
 
-        foreach ($users as $user) {
-            $content = Content::where('content_user_id', $user->user_id)
-                ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
+        if (date('N') == 6 || date('N') == 7) {
+            // Nothing
+        } else {
+            foreach ($users as $user) {
+                $content = Content::where('content_user_id', $user->user_id)
+                    ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
 
-            if ($content < $user->user_daily_target) {
-                $message = "<p>Don't Forget To Upload Content For This Day, " . $user->user_daily_target - $content . " Content Remaining To Upload</p>";
+                if ($content < $user->user_daily_target) {
+                    $message = "<p>Don't Forget To Upload Content For This Day, " . $user->user_daily_target - $content . " Content Remaining To Upload</p>";
 
-                $data_notif = [
-                    'notification_user_id' => $user->user_id,
-                    'notification_detail' => $message,
-                    'notification_status' => 0,
-                    'notification_date' => date('Y-m-d')
-                ];
-                Notification::create($data_notif);
+                    $data_notif = [
+                        'notification_user_id' => $user->user_id,
+                        'notification_detail' => $message,
+                        'notification_status' => 0,
+                        'notification_date' => date('Y-m-d')
+                    ];
+                    Notification::create($data_notif);
+                }
             }
         }
     }
