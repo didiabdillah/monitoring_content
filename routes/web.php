@@ -56,7 +56,8 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
 
         //Calendar
         Route::group(['prefix' => 'calendar'], function () {
-            Route::delete('/{id}/detail', 'CalendarController@detail')->name('calendar_detail');
+            Route::get('/{date}/detail', 'CalendarController@detail')->name('calendar_detail');
+            Route::post('/get_data', 'CalendarController@get_data')->name('calendar_get_data');
         });
 
         //FOR ADMIN ONLY

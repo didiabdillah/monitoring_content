@@ -114,50 +114,55 @@
 
     //
     $(function() {
-        /* initialize the calendar
-         -----------------------------------------------------------------*/
-        //Date for the calendar events (dummy data)
-        var date = new Date()
-        var d = date.getDate(),
-            m = date.getMonth(),
-            y = date.getFullYear()
-
-        var Calendar = FullCalendar.Calendar;
-        var Draggable = FullCalendar.Draggable;
-
-        var calendarEl = document.getElementById('calendar');
-
-        var calendar = new Calendar(calendarEl, {
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth'
+        // Generate Hosting Chart
+        $.ajax({
+            url: "{{route('calendar_get_data')}}",
+            method: "POST",
+            data: {
+                id: 0
             },
-            themeSystem: 'bootstrap',
-            //Random default events
-            events: [{
-                title: 'All Day Event',
-                start: '2021-03-01',
-                backgroundColor: '#f56954', //red
-                borderColor: '#f56954', //red
-                url: 'https://www.google.com/',
-                allDay: true
-            }],
-            editable: false,
-            droppable: false, // this allows things to be dropped onto the calendar !!!
-            drop: function(info) {
-                // is the "remove after drop" checkbox checked?
-                console.log(checkbox.checked);
-                if (checkbox.checked) {
-                    // if so, remove the element from the "Draggable Events" list
-                    info.draggedEl.parentNode.removeChild(info.draggedEl);
+            dataType: 'json',
+            success: function(data) {
+                /* initialize the calendar
+                      -----------------------------------------------------------------*/
+                //Date for the calendar events (dummy data)
+                var date = new Date()
+                var d = date.getDate(),
+                    m = date.getMonth(),
+                    y = date.getFullYear()
 
-                }
+                var Calendar = FullCalendar.Calendar;
+                var Draggable = FullCalendar.Draggable;
+
+                var calendarEl = document.getElementById('calendar');
+
+                var calendar = new Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth'
+                    },
+                    themeSystem: 'bootstrap',
+                    //Random default events
+                    events: data,
+                    editable: false,
+                    droppable: false, // this allows things to be dropped onto the calendar !!!
+                    drop: function(info) {
+                        // is the "remove after drop" checkbox checked?
+                        console.log(checkbox.checked);
+                        if (checkbox.checked) {
+                            // if so, remove the element from the "Draggable Events" list
+                            info.draggedEl.parentNode.removeChild(info.draggedEl);
+
+                        }
+                    }
+                });
+
+                calendar.render();
+                // $('#calendar').fullCalendar()
+
             }
         });
-
-        calendar.render();
-        // $('#calendar').fullCalendar()
 
     });
 </script>
