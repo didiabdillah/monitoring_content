@@ -10,27 +10,14 @@ use DateTime;
 use App\Models\User;
 use App\Models\Notification;
 use App\Models\Content;
+use App\Models\Missed_upload;
 
 class HomeController extends Controller
 {
     public function index()
     {
         // $notification = Notification::where('notification_status', 0)->count();
-        // $domain = Domain::all()->count();
-        // $hosting = Hosting::all()->count();
         // $user = User::all()->count();
-        // $provider = Provider::all()->count();
-        // $domain_list = Domain::orderBy('domain_name', 'asc')->get();
-        // $hosting_list = Hosting::orderBy('hosting_type', 'asc')->get();
-
-        // $cheapest_hosting =  Hosting_detail::join('hostings', 'hosting_details.hosting_detail_hosting_id', '=', 'hostings.hosting_id')
-        //     ->join('providers', 'hosting_details.hosting_detail_provider_id', '=', 'providers.provider_id')
-        //     ->where('hosting_detail_month', date('n'))
-        //     ->where('hosting_detail_year', date('Y'))
-        //     ->orderBy('hosting_detail_price', 'asc')
-        //     ->limit(10)
-        //     ->get();
-        // $cheapest_hosting = (count($cheapest_hosting) != 0) ? $cheapest_hosting : NULL;
 
         $role = Session::get('user_role');
         $userId = Session::get('user_id');
@@ -41,9 +28,6 @@ class HomeController extends Controller
 
             return view('home.admin.home', ['total_target' => $total_target->total_target, 'total_user' => $total_user]);
         } else if ($role == "operator") {
-            $user_register_interval = $this->countIntervalUserDays($userId);
-
-
             $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
             $today_uploaded = Content::where('content_user_id', $userId)
                 // ->where('content_status', __('content_status.content_status_success'))
@@ -53,13 +37,15 @@ class HomeController extends Controller
 
             $today_upload_remaining = $daily_target->target - $today_uploaded;
 
-            // if ($today_uploaded == 0) {
-            //     $today_upload_remaining = $daily_target->target;
-            // } else {
-            //     $today_upload_remaining = $daily_target->target - $today_uploaded;
-            // }
+            $total_upload_missed = Missed_upload::where('missed_upload_user_id', $userId)
+                ->select(User::raw('SUM(missed_upload_total) as total_missed'))->first();
 
-            return view('home.operator.home', ['daily_target' => $daily_target->target, 'today_upload_remaining' => $today_upload_remaining]);
+            $total_missed_day = Missed_upload::where('missed_upload_user_id', $userId)
+                ->get()->groupBy(function ($item) {
+                    return $item->missed_upload_date;
+                })->count();
+
+            return view('home.operator.home', ['total_missed_day' => $total_missed_day, 'daily_target' => $daily_target->target, 'today_upload_remaining' => $today_upload_remaining, 'total_upload_missed' => $total_upload_missed]);
         }
     }
 

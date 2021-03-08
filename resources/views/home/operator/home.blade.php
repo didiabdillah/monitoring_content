@@ -45,7 +45,7 @@
                         <!-- small card -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>0</h3>
+                                <h3>{{$total_upload_missed->total_missed}}</h3>
 
                                 <p>Total Upload Missed</p>
                             </div>
@@ -73,9 +73,9 @@
                         <!-- small card -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>0</h3>
+                                <h3>{{$total_missed_day}}</h3>
 
-                                <p>Missed Day</p>
+                                <p>Total Missed Day</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-calendar-week"></i>
