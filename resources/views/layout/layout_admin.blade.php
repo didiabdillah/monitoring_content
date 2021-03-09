@@ -176,6 +176,15 @@
 
                         @if( $role == 'admin')
                         <li class="nav-item">
+                            <a href="{{route('calendar')}}" class="nav-link @if(Request::segment(1) == 'calendar' || Request::segment(2) == 'calendar') {{'active'}} @endif">
+                                <i class="nav-icon fas fa-calendar"></i>
+                                <p>
+                                    Calendar
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{route('operator')}}" class="nav-link @if(Request::segment(1) == 'operator' || Request::segment(2) == 'operator') {{'active'}} @endif">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>

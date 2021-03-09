@@ -12,9 +12,20 @@ use App\Models\Missed_upload;
 class CalendarController extends Controller
 {
     //Calendar
+    public function index()
+    {
+        return view('calendar.calendar');
+    }
+
     public function detail($date)
     {
-        echo $date;
+        $data = Missed_upload::join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+            ->select('missed_uploads.*', 'users.user_name', 'users.user_image')
+            ->where('missed_uploads.missed_upload_date', $date)
+            ->orderBy('missed_uploads.created_at', 'asc')
+            ->get();
+
+        return view('calendar.detail', ['data' => $data]);
     }
 
     public function get_data(Request $request)

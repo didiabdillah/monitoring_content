@@ -56,6 +56,7 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
 
         //Calendar
         Route::group(['prefix' => 'calendar'], function () {
+            Route::get('/', 'CalendarController@index')->name('calendar');
             Route::get('/{date}/detail', 'CalendarController@detail')->name('calendar_detail');
             Route::post('/get_data', 'CalendarController@get_data')->name('calendar_get_data');
         });
