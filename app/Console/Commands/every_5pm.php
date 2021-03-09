@@ -42,12 +42,14 @@ class every_5pm extends Command
     {
         $users = User::where('user_role', 'operator')->get();
 
+        // if (date('N') == 6 || date('N') == 7) {
+        //     // Nothing
+        // } 
 
-        if (date('N') == 6 || date('N') == 7) {
-            // Nothing
-        } else {
+        if (date('N') != 6 || date('N') != 7) {
             foreach ($users as $user) {
                 $content = Content::where('content_user_id', $user->user_id)
+                    ->where('content_date', date('Y-m-d'))
                     ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])->count();
 
                 if ($content < $user->user_daily_target) {

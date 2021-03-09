@@ -71,7 +71,64 @@
 
                                 <hr>
 
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <!-- small card -->
+                                        <div class="small-box bg-info">
+                                            <div class="inner">
+                                                <h3>{{$daily_target}}</h3>
 
+                                                <p>Daily Target</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-calendar-times"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ./col -->
+                                    <div class="col-md-3">
+                                        <!-- small card -->
+                                        <div class="small-box bg-success">
+                                            <div class="inner">
+                                                <h3>{{$total_upload_missed->total_missed}}</h3>
+
+                                                <p>Total Upload Missed</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-upload"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ./col -->
+                                    <div class="col-md-3">
+                                        <!-- small card -->
+                                        <div class="small-box bg-primary">
+                                            <div class="inner">
+                                                <h3>{{$today_upload_remaining}}</h3>
+
+                                                <p>Today Upload Remaining</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-calendar-day"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ./col -->
+                                    <div class="col-md-3">
+                                        <!-- small card -->
+                                        <div class="small-box bg-danger">
+                                            <div class="inner">
+                                                <h3>{{$total_missed_day}}</h3>
+
+                                                <p>Total Missed Day</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-calendar-week"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ./col -->
+                                </div>
 
                                 <hr>
 

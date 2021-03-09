@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
 use App\Models\User;
+use App\Models\Missed_upload;
+use App\Models\Content;
 
 class OperatorController extends Controller
 {
@@ -206,6 +208,26 @@ class OperatorController extends Controller
     {
         $user = User::where('user_id', $id)->first();
 
-        return view('operator.detail', ['user' => $user]);
+        $userId = $id;
+
+        $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
+        $today_uploaded = Content::where('content_user_id', $userId)
+            // ->where('content_status', __('content_status.content_status_success'))
+            ->where('content_date', date('Y-m-d'))
+            ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])
+            ->count();
+
+        $today_upload_remaining = $daily_target->target - $today_uploaded;
+
+        $total_upload_missed = Missed_upload::where('missed_upload_user_id', $userId)
+            ->select(User::raw('SUM(missed_upload_total) as total_missed'))->first();
+
+        $total_missed_day = Missed_upload::where('missed_upload_user_id', $userId)
+            ->get()->groupBy(function ($item) {
+                return $item->missed_upload_date;
+            })->count();
+
+
+        return view('operator.detail', ['user' => $user, 'total_missed_day' => $total_missed_day, 'daily_target' => $daily_target->target, 'today_upload_remaining' => $today_upload_remaining, 'total_upload_missed' => $total_upload_missed]);
     }
 }
