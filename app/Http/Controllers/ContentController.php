@@ -11,6 +11,7 @@ use App\Models\Content;
 use App\Models\Content_file;
 use App\Models\Content_history;
 use App\Models\Content_link;
+use App\Models\Missed_upload;
 use App\Models\Notification;
 
 class ContentController extends Controller
@@ -107,17 +108,6 @@ class ContentController extends Controller
                 if ($file->getClientOriginalExtension() == "docx" || $file->getClientOriginalExtension() == "doc") {
 
                     $file->move($destination_word, $file->hashName());
-
-                    // /* Set the PDF Engine Renderer Path */
-                    // $domPdfPath = base_path('vendor/dompdf/dompdf');
-                    // \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
-                    // \PhpOffice\PhpWord\Settings::setPdfRendererName('DomPDF');
-                    // //Load word file
-                    // $Content = \PhpOffice\PhpWord\IOFactory::load(public_path($destination_word . $hashName));
-
-                    // //Save it into PDF
-                    // $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
-                    // $PDFWriter->save(public_path($destination_pdf . pathinfo($hashName, PATHINFO_FILENAME) . '.pdf'));
                 } else {
 
                     $file->move($destination_img, $file->hashName());
@@ -126,6 +116,14 @@ class ContentController extends Controller
                 Content_file::create($data);
             }
         }
+
+        //Remove From Missed Upload Data
+        if ($request->date) {
+            // Missed_upload::where('missed_upload_user_id', $user_id)
+            //     ->where('missed_upload_date', $request->date)
+            //     ->delete();
+        }
+
         //Flash Message
         flash_alert(
             __('alert.icon_success'), //Icon

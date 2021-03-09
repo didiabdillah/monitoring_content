@@ -185,6 +185,15 @@
                         </li>
 
                         <li class="nav-item">
+                            <a href="{{route('category')}}" class="nav-link @if(Request::segment(1) == 'category' || Request::segment(2) == 'category') {{'active'}} @endif">
+                                <i class="nav-icon fas fa-layer-group"></i>
+                                <p>
+                                    Category
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{route('operator')}}" class="nav-link @if(Request::segment(1) == 'operator' || Request::segment(2) == 'operator') {{'active'}} @endif">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>

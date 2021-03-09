@@ -17,6 +17,7 @@ class CreateContentsTable extends Migration
             $table->bigIncrements('content_id');
             $table->string('content_user_id', 64);
             $table->string('content_title', 255);
+            $table->string('content_category', 255);
             $table->date('content_date');
             $table->text('content_note')->nullable();
             $table->enum('content_type', ['file', 'link']);

@@ -54,15 +54,26 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::delete('/{id}/destroy', 'NotificationController@destroy')->name('notification_destroy');
         });
 
-        //Calendar
-        Route::group(['prefix' => 'calendar'], function () {
-            Route::get('/', 'CalendarController@index')->name('calendar');
-            Route::get('/{date}/detail', 'CalendarController@detail')->name('calendar_detail');
-            Route::post('/get_data', 'CalendarController@get_data')->name('calendar_get_data');
-        });
 
         //FOR ADMIN ONLY
         Route::group(['middleware' => ['is_Admin']], function () {
+            //Calendar
+            Route::group(['prefix' => 'calendar'], function () {
+                Route::get('/', 'CalendarController@index')->name('calendar');
+                Route::get('/{date}/detail', 'CalendarController@detail')->name('calendar_detail');
+                Route::post('/get_data', 'CalendarController@get_data')->name('calendar_get_data');
+            });
+
+            //Category
+            Route::group(['prefix' => 'category'], function () {
+                Route::get('/', 'CategoryController@index')->name('category');
+                Route::get('/insert', 'CategoryController@insert')->name('category_insert');
+                Route::post('/insert', 'CategoryController@store')->name('category_store');
+                Route::get('/{id}/edit', 'CategoryController@edit')->name('category_edit');
+                Route::patch('/{id}/edit', 'CategoryController@update')->name('category_update');
+                Route::delete('/{id}/destroy', 'CategoryController@destroy')->name('category_destroy');
+            });
+
             //Setting
             Route::group(['prefix' => 'setting'], function () {
                 Route::get('/', 'SettingController@index')->name('setting');

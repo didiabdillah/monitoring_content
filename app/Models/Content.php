@@ -9,7 +9,7 @@ class Content extends Model
     protected $primaryKey = 'content_id';
 
     protected $fillable = [
-        'content_user_id',    'content_type',    'content_file', 'content_title', 'content_date',   'content_link', 'content_status', 'content_note',
+        'content_user_id',    'content_type', 'content_category',   'content_file', 'content_title', 'content_date',   'content_link', 'content_status', 'content_note',
     ];
 
 
