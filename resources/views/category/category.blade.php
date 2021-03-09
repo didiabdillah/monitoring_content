@@ -76,6 +76,7 @@
                                         <form action="{{route('category_destroy', $data->category_id)}}" method="POST" class="form-inline form-horizontal">
                                             @csrf
                                             @method('delete')
+
                                             <a class="btn btn-primary btn-sm" href="{{route('category_edit', $data->category_id)}}">
                                                 <i class="fas fa-pencil-alt">
                                                 </i>
@@ -83,7 +84,7 @@
                                                 Edit
                                             </a>
 
-                                            <button class="btn btn-danger btn-sm btn-remove" type="submit">
+                                            <button class="btn btn-danger btn-sm btn-remove ml-1" type="submit">
                                                 <i class="fas fa-trash">
                                                 </i>
 
