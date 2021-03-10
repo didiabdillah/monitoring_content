@@ -65,6 +65,21 @@
                                                     </div>
 
                                                     <div class="form-group">
+                                                        <label for="category">Category</label>
+                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                            <option value="">Select Category</option>
+                                                            @foreach($category as $row)
+                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('category')
+                                                        <div class="invalid-feedback">
+                                                            Please select category
+                                                        </div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="form-group">
                                                         <label for="note">Note</label>
                                                         <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
                                                         @error('note')
@@ -111,6 +126,21 @@
                                                         @error('title')
                                                         <div class="invalid-feedback">
                                                             {{$message}}
+                                                        </div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="category">Category</label>
+                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                            <option value="">Select Category</option>
+                                                            @foreach($category as $row)
+                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('category')
+                                                        <div class="invalid-feedback">
+                                                            Please select category
                                                         </div>
                                                         @enderror
                                                     </div>
@@ -181,6 +211,21 @@
                                                     </div>
 
                                                     <div class="form-group">
+                                                        <label for="category">Category</label>
+                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                            <option value="">Select Category</option>
+                                                            @foreach($category as $row)
+                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('category')
+                                                        <div class="invalid-feedback">
+                                                            Please select category
+                                                        </div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="form-group">
                                                         <label for="date">Date</label>
                                                         <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{old('date')}}">
                                                         @error('date')
@@ -237,6 +282,21 @@
                                                         @error('title')
                                                         <div class="invalid-feedback">
                                                             {{$message}}
+                                                        </div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="category">Category</label>
+                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                            <option value="">Select Category</option>
+                                                            @foreach($category as $row)
+                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('category')
+                                                        <div class="invalid-feedback">
+                                                            Please select category
                                                         </div>
                                                         @enderror
                                                     </div>

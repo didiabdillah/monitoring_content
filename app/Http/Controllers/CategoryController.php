@@ -4,15 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use PDF;
-use Illuminate\Support\Facades\File;
 
-use App\Models\Content;
-use App\Models\Content_file;
-use App\Models\Content_history;
-use App\Models\Content_link;
 use App\Models\Category;
-use App\Models\Notification;
 
 class CategoryController extends Controller
 {

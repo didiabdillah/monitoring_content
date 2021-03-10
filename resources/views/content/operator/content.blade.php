@@ -58,6 +58,7 @@
                                     <th>No</th>
                                     <th>Title</th>
                                     <th>Type</th>
+                                    <th>Category</th>
                                     <th>Status</th>
                                     <th>Timestamps</th>
                                     <th>Content</th>
@@ -78,6 +79,10 @@
 
                                     <td>
                                         <h6>{{$data->content_type}}</h6>
+                                    </td>
+
+                                    <td>
+                                        <h6>{{$data->content_category}}</h6>
                                     </td>
 
                                     <td>

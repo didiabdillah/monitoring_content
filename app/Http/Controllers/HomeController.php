@@ -40,6 +40,10 @@ class HomeController extends Controller
             $total_upload_missed = Missed_upload::where('missed_upload_user_id', $userId)
                 ->select(User::raw('SUM(missed_upload_total) as total_missed'))->first();
 
+            if ($total_upload_missed->total_missed == NULL) {
+                $total_upload_missed->total_missed = 0;
+            }
+
             $total_missed_day = Missed_upload::where('missed_upload_user_id', $userId)
                 ->get()->groupBy(function ($item) {
                     return $item->missed_upload_date;

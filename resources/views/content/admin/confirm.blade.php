@@ -99,6 +99,12 @@
 
                                 <hr>
 
+                                <strong><i class="fas fa-layer-group mr-1"></i> Category</strong>
+
+                                <p class="text-muted"> {{$content->content_category}}</p>
+
+                                <hr>
+
                                 <strong><i class="fas fa-info-circle mr-1"></i> Status</strong>
 
                                 <p class="text-muted">

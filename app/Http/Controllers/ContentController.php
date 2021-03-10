@@ -13,6 +13,7 @@ use App\Models\Content_history;
 use App\Models\Content_link;
 use App\Models\Missed_upload;
 use App\Models\Notification;
+use App\Models\Category;
 
 class ContentController extends Controller
 {
@@ -39,7 +40,9 @@ class ContentController extends Controller
 
     public function insert()
     {
-        return view('content.operator.insert');
+        $category = Category::orderBy('category_name', 'asc')->get();
+
+        return view('content.operator.insert', ['category' => $category]);
     }
 
     public function store_file(Request $request)
@@ -50,6 +53,7 @@ class ContentController extends Controller
                 [
                     'title'  => 'required|max:255',
                     'date'  => 'required',
+                    'category'  => 'required',
                     'note'  => 'max:60000',
                     'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
                 ],
@@ -61,6 +65,7 @@ class ContentController extends Controller
             $request->validate(
                 [
                     'title'  => 'required|max:255',
+                    'category'  => 'required',
                     'note'  => 'max:60000',
                     'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
                 ],
@@ -77,7 +82,7 @@ class ContentController extends Controller
         $date = ($request->date) ? $request->date : date('Y-m-d');
         $destination_word = "assets/file/word/";
         $destination_img = "assets/file/img/";
-        $destination_pdf = "assets/file/pdf/";
+        $category = htmlspecialchars($request->category);
 
         //Insert Data
         $data_content = [
@@ -85,6 +90,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $type,
             'content_date' => $date,
+            'content_category' => $category,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
         ];
@@ -143,6 +149,7 @@ class ContentController extends Controller
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
                     'date'  => 'required',
+                    'category'  => 'required',
                     'link'  => 'required|max:255',
                 ]
             );
@@ -151,6 +158,7 @@ class ContentController extends Controller
                 [
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
+                    'category'  => 'required',
                     'link'  => 'required|max:255',
                 ]
             );
@@ -158,6 +166,7 @@ class ContentController extends Controller
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
+        $category = htmlspecialchars($request->category);
         $type = "link";
         $date = ($request->date) ? $request->date : date('Y-m-d');
         $user_id = $request->session()->get('user_id');
@@ -168,6 +177,7 @@ class ContentController extends Controller
             'content_title' => $title,
             'content_note' => $note,
             'content_type' => $type,
+            'content_category' => $category,
             'content_date' => $date,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
@@ -195,17 +205,18 @@ class ContentController extends Controller
     {
         $content = Content::find($id);
         $date = date('Y-m-d', strtotime($content->created_at));
+        $category = Category::orderBy('category_name', 'asc')->get();
 
         if ($content->content_type == "file") {
 
-            return view('content.operator.edit_file', ['content' => $content, 'date' => $date]);
+            return view('content.operator.edit_file', ['content' => $content, 'date' => $date, 'category' => $category]);
         } else if ($content->content_type == "link") {
 
 
             foreach ($content->content_link()->get() as $link) {
                 $content_link = $link->content_link_url;
             }
-            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link, 'date' => $date]);
+            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link, 'date' => $date, 'category' => $category]);
         }
     }
 
@@ -218,6 +229,7 @@ class ContentController extends Controller
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
                     'date'  => 'required',
+                    'category'  => 'required',
                     'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
                 ],
                 [
@@ -229,6 +241,7 @@ class ContentController extends Controller
                 [
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
+                    'category'  => 'required',
                     'file.*'  => 'mimes:doc,docx,jpeg,jpg,png,gif',
                 ],
                 [
@@ -244,7 +257,7 @@ class ContentController extends Controller
         $note = htmlspecialchars($request->note);
         $user_id = $request->session()->get('user_id');
         $destination_word = "assets/file/word/";
-        $destination_pdf = "assets/file/pdf/";
+        $category = htmlspecialchars($request->category);
         $destination_img = "assets/file/img/";
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
@@ -254,6 +267,7 @@ class ContentController extends Controller
                 'content_title' => $title,
                 'content_note' => $note,
                 'content_date' => $request->date,
+                'content_category' => $category,
                 'content_type' => $content->content_type,
                 'content_user_id' => $user_id,
                 'content_status' => $status,
@@ -262,6 +276,7 @@ class ContentController extends Controller
             $data_content = [
                 'content_title' => $title,
                 'content_note' => $note,
+                'content_category' => $category,
                 'content_type' => $content->content_type,
                 'content_user_id' => $user_id,
                 'content_status' => $status,
@@ -351,6 +366,7 @@ class ContentController extends Controller
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
                     'date'  => 'required',
+                    'category'  => 'required',
                     'link'  => 'required|max:255',
                 ]
             );
@@ -359,6 +375,7 @@ class ContentController extends Controller
                 [
                     'title'  => 'required|max:255',
                     'note'  => 'max:60000',
+                    'category'  => 'required',
                     'link'  => 'required|max:255',
                 ]
             );
@@ -369,6 +386,7 @@ class ContentController extends Controller
 
         $title = htmlspecialchars($request->title);
         $note = htmlspecialchars($request->note);
+        $category = htmlspecialchars($request->category);
         $user_id = $request->session()->get('user_id');
         $link = htmlspecialchars($request->link);
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
@@ -378,6 +396,7 @@ class ContentController extends Controller
             $data_content = [
                 'content_title' => $title,
                 'content_note' => $note,
+                'content_category' => $category,
                 'content_type' => $content->content_type,
                 'content_date' => $request->date,
                 'content_user_id' => $user_id,
@@ -387,6 +406,7 @@ class ContentController extends Controller
             $data_content = [
                 'content_title' => $title,
                 'content_note' => $note,
+                'content_category' => $category,
                 'content_type' => $content->content_type,
                 'content_user_id' => $user_id,
                 'content_status' => $status,

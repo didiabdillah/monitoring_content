@@ -49,6 +49,21 @@
                             @endif
 
                             <div class="form-group">
+                                <label for="category">Category</label>
+                                <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                    <option value="">Select Category</option>
+                                    @foreach($category as $row)
+                                    <option value="{{$row->category_name}}" @if($content->content_category == $row->category_name) selected @endif>{{$row->category_name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('category')
+                                <div class="invalid-feedback">
+                                    Please select category
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
                                 <label for="note">Note</label>
                                 <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{$content->content_note}}</textarea>
                                 @error('note')
@@ -87,7 +102,6 @@
 
                             </div>
 
-
                             <div class="form-group">
                                 <label for="file">File Upload (Can Multiple)</label>
                                 <div class="input-group  @error('file') is-invalid @enderror">
@@ -123,6 +137,17 @@
 @endsection
 
 @push('plugin')
+
+<!-- Select2 -->
+<script src="{{URL::asset('assets/js/select2/js/select2.full.min.js')}}"></script>
+
+<script>
+    $(function() {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+    });
+</script>
+
 <!-- bs-custom-file-input -->
 <script src="{{URL::asset('assets/js/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
 

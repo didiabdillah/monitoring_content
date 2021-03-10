@@ -48,6 +48,7 @@
                                     <th>No</th>
                                     <th>Title</th>
                                     <th>Type</th>
+                                    <th>Category</th>
                                     <th>Owner</th>
                                     <th>Status</th>
                                     <th>Timestamps</th>
@@ -72,6 +73,10 @@
 
                                     <td>
                                         <h6>{{$data->content_type}}</h6>
+                                    </td>
+
+                                    <td>
+                                        <h6>{{$data->content_category}}</h6>
                                     </td>
 
                                     <td class="clickTableData" onClick="document.location.href='{{$link_profile}}';">
