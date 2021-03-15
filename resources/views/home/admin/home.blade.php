@@ -60,14 +60,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3"><strong>Submited Content Chart</strong></h4>
+                            <!-- <h4 class="card-title mb-3"><strong>Submited Content Chart</strong></h4> -->
 
-                                <div class="card-body">
-                                    <div class="chart content">
-                                        <!-- CHART Will Render Here -->
-                                    </div>
+                            <div class="card-body">
+
+                                <div class="chart content">
+                                    <!-- CHART Will Render Here -->
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -159,6 +159,10 @@
     });
 </script>
 
+<!-- ChartJS -->
+<script src="{{ asset('assets/js/chart.js/Chart.min.js') }}"></script>
+<script src="{{ asset('assets/js/chart.js/utils.js') }}"></script>
+
 <script>
     // Ajax setup from csrf token
     $.ajaxSetup({
@@ -192,12 +196,12 @@
                     maintainAspectRatio: false,
                     responsive: true,
                     legend: {
-                        display: true
+                        display: false
                     },
                     title: {
                         display: true,
                         fontSize: 18,
-                        text: data[1]
+                        text: "Total Submited Content In Last 1 Week"
                     },
                     tooltips: {
                         mode: 'index',
@@ -224,59 +228,37 @@
                     }
                 }
 
-                var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
                 var today = new Date();
                 var d;
                 var day = [];
 
                 for (var i = 6; i >= 0; i--) {
-                    d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-                    day[6 - i] = dayNames[d.getMonth()] + ' ' + d.getFullYear();
+                    d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+                    day[6 - i] = dayNames[d.getDay()];
                 }
-                var chart_result = data[0];
+                var chart_result = data.chartData;
                 // console.log(chart_result);
                 var lineChartData = {
                     labels: day,
                     datasets: []
                 }
 
-                if (chart_result === undefined || chart_result.length == 0 || chart_result.length == null) {
-                    var newDataset = {
-                        label: "EMPTY",
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        borderColor: 'rgba(60,141,188,0.8)',
-                        pointRadius: false,
-                        pointColor: '#3b8bba',
-                        pointStrokeColor: 'rgba(60,141,188,1)',
-                        pointHighlightFill: '#fff',
-                        pointHighlightStroke: 'rgba(60,141,188,1)',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        fill: false
-                    };
+                var newDataset = {
 
-                    lineChartData.datasets.push(newDataset);
-                } else {
-                    var colorNames = Object.keys(window.chartColors);
-                    for (i = 0; i < chart_result.length; i++) {
-                        var colorName = colorNames[lineChartData.datasets.length % colorNames.length];
-                        var newColor = window.chartColors[colorName];
-                        var newDataset = {
-                            label: chart_result[i][1],
-                            backgroundColor: newColor,
-                            borderColor: newColor,
-                            pointRadius: false,
-                            pointColor: '#3b8bba',
-                            pointStrokeColor: newColor,
-                            pointHighlightFill: '#fff',
-                            pointHighlightStroke: newColor,
-                            data: chart_result[i][0],
-                            fill: false
-                        };
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: chart_result,
+                    fill: false
+                };
 
-                        lineChartData.datasets.push(newDataset);
-                    }
-                }
+                lineChartData.datasets.push(newDataset);
 
                 lineChartOptions.datasetFill = false
 
