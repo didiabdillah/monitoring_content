@@ -41,6 +41,7 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
     Route::group(['middleware' => ['is_Login']], function () {
         //Home
         Route::get('/home', 'HomeController@index')->name('home');
+        Route::post('/home/user/missed', 'HomeController@user_missed')->name('home_get_user_missed');
 
         //403 Forbidden Page
         Route::get('/forbidden', 'ErrorController@forbidden')->name('forbidden');
@@ -115,6 +116,7 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
             Route::post('/edit/{id}/file/remove', 'ContentController@update_file_remove')->name('content_update_file_remove');
             Route::patch('/edit/{id}/link', 'ContentController@update_link')->name('content_update_link');
             Route::delete('/destroy/{id}', 'ContentController@destroy')->name('content_destroy');
+            Route::post('/chart', 'ContentController@chart')->name('content_chart');
 
             // Content Detail
             Route::group(['prefix' => '{content_id}'], function () {
