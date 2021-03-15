@@ -42,8 +42,7 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
         //Home
         Route::group(['prefix' => 'home'], function () {
             Route::get('/', 'HomeController@index')->name('home');
-            Route::post('/user/missed', 'HomeController@user_missed')->name('home_get_user_missed');
-            Route::post('/chart', 'HomeController@content_chart')->name('home_content_chart');
+            Route::get('/chart', 'HomeController@content_chart')->name('home_content_chart');
         });
 
         //403 Forbidden Page

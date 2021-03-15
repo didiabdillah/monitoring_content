@@ -90,6 +90,20 @@
                                     </thead>
                                     <tbody>
 
+                                        @foreach($missed_upload as $data)
+                                        <tr>
+                                            <td>
+                                                {{$loop->iteration}}
+                                            </td>
+                                            <td>
+                                                {{$data->user_name}}
+                                            </td>
+                                            <td>
+                                                {{$data->total}}
+                                            </td>
+                                        </tr>
+                                        @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
@@ -129,7 +143,9 @@
             "autoWidth": false,
             "responsive": true,
             "pagingType": "simple_numbers",
+            "lengthMenu": [10]
         });
+
     });
 </script>
 
@@ -271,28 +287,6 @@
                 })
 
                 lineChart.update();
-
-            }
-        });
-
-        return false;
-    });
-
-    // LOAD DATA LIST USER MISSED UPDATE CONTENT
-    $(function() {
-        const missed = 0;
-
-        // generate provider option select
-        $.ajax({
-            url: "{{route('home_get_user_missed')}}",
-            method: "POST",
-            data: {
-                id: missed
-            },
-            cache: false,
-            success: function(data) {
-                $('table#listMissed > tbody').empty();
-                $('table#listMissed > tbody').html(data);
 
             }
         });

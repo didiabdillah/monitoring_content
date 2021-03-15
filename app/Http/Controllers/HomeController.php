@@ -25,9 +25,17 @@ class HomeController extends Controller
 
         if ($role == "admin") {
             $total_target = User::select(User::raw('SUM(user_daily_target) as total_target'))->first();
+
             $total_user = User::where('user_role', '!=', 'admin')->count();
 
-            return view('home.admin.home', ['total_target' => $total_target->total_target, 'total_user' => $total_user]);
+            $missed_upload =  Missed_upload::select('user_name', Missed_upload::raw('SUM(missed_upload_total) as total'))
+                ->join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+                ->groupBy('users.user_name')
+                ->groupBy('users.user_id')
+                ->orderBy('users.user_name', 'asc')
+                ->get();
+
+            return view('home.admin.home', ['total_target' => $total_target->total_target, 'total_user' => $total_user, 'missed_upload' => $missed_upload]);
         } else if ($role == "operator") {
             $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
             $today_uploaded = Content::where('content_user_id', $userId)
@@ -65,40 +73,32 @@ class HomeController extends Controller
         return $interval->days;
     }
 
-    public function user_missed(Request $request)
-    {
-        $missed_upload =  Missed_upload::select('user_name', Missed_upload::raw('SUM(missed_upload_total) as total'))
-            ->join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
-            ->groupBy('users.user_name')
-            ->groupBy('users.user_id')
-            ->orderBy('users.user_name', 'asc')
-            ->get();
+    // public function user_missed(Request $request)
+    // {
+    //     $missed_upload =  Missed_upload::select('user_name', Missed_upload::raw('SUM(missed_upload_total) as total'))
+    //         ->join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+    //         ->groupBy('users.user_name')
+    //         ->groupBy('users.user_id')
+    //         ->orderBy('users.user_name', 'asc')
+    //         ->get();
 
-        $missed_upload = (count($missed_upload) != 0) ? $missed_upload : NULL;
+    //     $missed_upload = (count($missed_upload) != 0) ? $missed_upload : NULL;
 
-        return view('home.list_template.user_missed_list', ['missed_upload' => $missed_upload]);
-    }
+    //     return view('home.list_template.user_missed_list', ['missed_upload' => $missed_upload]);
+    // }
 
     public function content_chart(Request $request)
     {
-        die;
-        $domain = Domain::where('domain_id', $domain_id)->first();
-
-        $provider = Provider::where('provider_id', $provider_id)->first();
-
         $chart = [];
         for ($i = 0; $i <= 6; $i++) {
-            $data = Domain_detail::where('domain_detail_domain_id', $domain_id)
-                ->where('domain_detail_provider_id', $provider_id)
-                ->where('domain_detail_month', date('n', strtotime("-" . $i . "months")))
-                ->where('domain_detail_year', date('Y', strtotime("-" . $i . "months")))
-                ->latest('created_at')
-                ->first();
+            $data = Content::whereDate('created_at', date('Y-m-d', strtotime("-" . $i . "day")))
+                ->where('content_date', date('Y-m-d', strtotime("-" . $i . "days")))
+                ->count();
 
             if ($data == null) {
                 $chart[$i] = 0;
             } else {
-                $chart[$i] = $data->domain_detail_price;
+                $chart[$i] = $data;
             }
         }
 
@@ -112,9 +112,9 @@ class HomeController extends Controller
             $chart[0],
         ];
 
-        $chart_data['providerName'] = $provider->provider_name;
+        // $chart_data['providerName'] = $provider->provider_name;
 
-        $chart_data['domainName'] = $domain->domain_name;
+        // $chart_data['domainName'] = $domain->domain_name;
 
         return json_encode($chart_data);
     }
