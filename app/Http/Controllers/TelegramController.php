@@ -49,7 +49,9 @@ class TelegramController extends Controller
 
         $result_message = NULL;
 
-        if (array_key_exists("message", $result)) {
+        if (array_key_exists("my_chat_member", $result)) {
+            $result_message = $result["my_chat_member"];
+        } else if (array_key_exists("message", $result)) {
             $result_message = $result["message"];
         } else if (array_key_exists("edited_message", $result)) {
             $result_message = $result["edited_message"];
@@ -89,18 +91,27 @@ class TelegramController extends Controller
 
     private function Invite($result_message, $chatId)
     {
+        $chat_id = Telegram_data_source::where('chat_id', $chatId)->count();
+
         // INVITE MANAJEMENT
         if (array_key_exists("group_chat_created", $result_message) || array_key_exists("new_chat_member", $result_message) || array_key_exists("new_chat_participant", $result_message)) {
-            Telegram_data_source::create([
-                'chat_id' => $chatId,
-                'chat_type' => $result_message["chat"]["type"],
-                'chat_mute' => false,
-            ]);
+            if ($chat_id == 0) {
+                Telegram_data_source::create([
+                    'chat_id' => $chatId,
+                    'chat_type' => $result_message["chat"]["type"],
+                    'chat_mute' => false,
+                ]);
 
-            $this->apiRequest('sendMessage', [
-                'chat_id' => $chatId,
-                'text' => "Thank You For Invited Me\n /mute for mute bot send message\n /unmute for unmute bot send message",
-            ]);
+                $this->apiRequest('sendMessage', [
+                    'chat_id' => $chatId,
+                    'text' => "Thank You For Invited Me\n /mute for mute bot send message\n /unmute for unmute bot send message",
+                ]);
+            } else {
+                Telegram_data_source::where('chat_id', $chatId)->update([
+                    'chat_type' => $result_message["chat"]["type"],
+                    'chat_mute' => false,
+                ]);
+            }
         } else if (array_key_exists("left_chat_member", $result_message) || array_key_exists("left_chat_participant", $result_message)) {
             Telegram_data_source::where('chat_id', $chatId)
                 ->delete();
