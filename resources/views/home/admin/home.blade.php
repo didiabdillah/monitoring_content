@@ -159,7 +159,7 @@
 
         //generate Content Chart
         $.ajax({
-            url: "{{route('content_chart')}}",
+            url: "{{route('home_content_chart')}}",
             method: "POST",
             data: {
                 id: content_id

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Notification;
@@ -62,5 +63,59 @@ class HomeController extends Controller
         $end_date = new DateTime($date_now);
         $interval = $start_date->diff($end_date);
         return $interval->days;
+    }
+
+    public function user_missed(Request $request)
+    {
+        $missed_upload =  Missed_upload::select('user_name', Missed_upload::raw('SUM(missed_upload_total) as total'))
+            ->join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+            ->groupBy('users.user_name')
+            ->groupBy('users.user_id')
+            ->orderBy('users.user_name', 'asc')
+            ->get();
+
+        $missed_upload = (count($missed_upload) != 0) ? $missed_upload : NULL;
+
+        return view('home.list_template.user_missed_list', ['missed_upload' => $missed_upload]);
+    }
+
+    public function content_chart(Request $request)
+    {
+        die;
+        $domain = Domain::where('domain_id', $domain_id)->first();
+
+        $provider = Provider::where('provider_id', $provider_id)->first();
+
+        $chart = [];
+        for ($i = 0; $i <= 6; $i++) {
+            $data = Domain_detail::where('domain_detail_domain_id', $domain_id)
+                ->where('domain_detail_provider_id', $provider_id)
+                ->where('domain_detail_month', date('n', strtotime("-" . $i . "months")))
+                ->where('domain_detail_year', date('Y', strtotime("-" . $i . "months")))
+                ->latest('created_at')
+                ->first();
+
+            if ($data == null) {
+                $chart[$i] = 0;
+            } else {
+                $chart[$i] = $data->domain_detail_price;
+            }
+        }
+
+        $chart_data['chartData'] = [
+            $chart[6],
+            $chart[5],
+            $chart[4],
+            $chart[3],
+            $chart[2],
+            $chart[1],
+            $chart[0],
+        ];
+
+        $chart_data['providerName'] = $provider->provider_name;
+
+        $chart_data['domainName'] = $domain->domain_name;
+
+        return json_encode($chart_data);
     }
 }
