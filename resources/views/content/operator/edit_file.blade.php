@@ -36,13 +36,18 @@
                                 @enderror
                             </div>
 
-                            @if($content->content_date != $date)
+                            @if($content->content_is_present == false)
                             <div class="form-group">
                                 <label for="date">Date</label>
-                                <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{$content->content_date}}">
+                                <select class="form-control select2 @error('date') is-invalid @enderror" data-placeholder="Select Date" style="width: 100%;" name="date">
+                                    <option value="">Select Date</option>
+                                    @foreach($date_list as $row)
+                                    <option value="{{$row->missed_upload_date}}" @if($content->content_date == $row->missed_upload_date) selected @endif>{{Carbon\Carbon::parse($row->missed_upload_date)->isoFormat('D MMMM Y')}}</option>
+                                    @endforeach
+                                </select>
                                 @error('date')
                                 <div class="invalid-feedback">
-                                    {{$message}}
+                                    Please select date
                                 </div>
                                 @enderror
                             </div>

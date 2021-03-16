@@ -91,6 +91,7 @@
                                     <tbody>
 
                                         @foreach($missed_upload as $data)
+                                        @if($data->total != 0)
                                         <tr>
                                             <td>
                                                 {{$loop->iteration}}
@@ -102,6 +103,7 @@
                                                 {{$data->total}}
                                             </td>
                                         </tr>
+                                        @endif
                                         @endforeach
 
                                     </tbody>

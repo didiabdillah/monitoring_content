@@ -213,6 +213,7 @@ class OperatorController extends Controller
         $daily_target = User::where('user_id', $userId)->select('user_daily_target as target')->first();
         $today_uploaded = Content::where('content_user_id', $userId)
             // ->where('content_status', __('content_status.content_status_success'))
+            ->where('content_is_present', true)
             ->where('content_date', date('Y-m-d'))
             ->whereBetween('created_at', [date('Y-m-d') . " 08:00:00", date('Y-m-d') . " 17:00:00"])
             ->count();

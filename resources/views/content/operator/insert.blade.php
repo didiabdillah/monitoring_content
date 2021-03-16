@@ -28,8 +28,12 @@
 
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link active" href="#present" data-toggle="tab">Present</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#past" data-toggle="tab">Past</a></li>
+                            @if(strtotime(date('Y-m-d H:i:s')) > strtotime(date('Y-m-d') . ' 08:00:00') && strtotime(date('Y-m-d H:i:s')) < strtotime(date('Y-m-d') . ' 17:00:00' )) <!-- -->
+                                <li class="nav-item"><a class="nav-link active" href="#present" data-toggle="tab">Present</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#past" data-toggle="tab">Past</a></li>
+                                @else
+                                <li class="nav-item"><a class="nav-link active" href="#past" data-toggle="tab">Past</a></li>
+                                @endif
                         </ul>
                     </div><!-- /.card-header -->
 
@@ -37,321 +41,338 @@
                         <div class="tab-content">
 
                             <!-- PRESENT-->
-                            <div class="active tab-pane" id="present">
-                                <div class="card-header p-2">
-                                    <ul class="nav nav-pills">
-                                        <li class="nav-item"><a class="nav-link active" href="#filePresent" data-toggle="tab">File</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#linkPresent" data-toggle="tab">Link</a></li>
-                                    </ul>
-                                </div><!-- /.card-header -->
+                            @if(strtotime(date('Y-m-d H:i:s')) > strtotime(date('Y-m-d') . ' 08:00:00') && strtotime(date('Y-m-d H:i:s')) < strtotime(date('Y-m-d') . ' 17:00:00' )) <!-- -->
+                                <div class="active tab-pane" id="present">
+                                    <div class="card-header p-2">
+                                        <ul class="nav nav-pills">
+                                            <li class="nav-item"><a class="nav-link active" href="#filePresent" data-toggle="tab">File</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#linkPresent" data-toggle="tab">Link</a></li>
+                                        </ul>
+                                    </div><!-- /.card-header -->
 
-                                <div class="card-body">
-                                    <div class="tab-content">
+                                    <div class="card-body">
+                                        <div class="tab-content">
 
-                                        <!-- INSERT FILE -->
-                                        <div class="active tab-pane" id="filePresent">
-                                            <!-- form start -->
-                                            <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <label for="title">Title</label>
-                                                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
-                                                        @error('title')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="category">Category</label>
-                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
-                                                            <option value="">Select Category</option>
-                                                            @foreach($category as $row)
-                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('category')
-                                                        <div class="invalid-feedback">
-                                                            Please select category
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="note">Note</label>
-                                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
-                                                        @error('note')
-                                                        <div class=" invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="file">File Upload (Can Multiple)</label>
-                                                        <div class="input-group  @error('file') is-invalid @enderror">
-                                                            <div class="custom-file">
-                                                                <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
-                                                                <label class="custom-file-label" for="file">Choose file</label>
+                                            <!-- INSERT FILE -->
+                                            <div class="active tab-pane" id="filePresent">
+                                                <!-- form start -->
+                                                <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="title">Title</label>
+                                                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                                            @error('title')
+                                                            <div class="invalid-feedback">
+                                                                {{$message}}
                                                             </div>
+                                                            @enderror
                                                         </div>
-                                                        @error('file')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
+
+                                                        <div class="form-group">
+                                                            <label for="category">Category</label>
+                                                            <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                                <option value="">Select Category</option>
+
+                                                                @foreach($category as $row)
+                                                                <option value="{{$row->category_name}}" @if(old('category')==$row->category_name)selected@endif>{{$row->category_name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            @error('category')
+                                                            <div class="invalid-feedback">
+                                                                Please select category
+                                                            </div>
+                                                            @enderror
                                                         </div>
-                                                        @enderror
+
+                                                        <div class="form-group">
+                                                            <label for="note">Note</label>
+                                                            <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                                            @error('note')
+                                                            <div class=" invalid-feedback">
+                                                                {{$message}}
+                                                            </div>
+                                                            @enderror
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="file">File Upload (Can Multiple)</label>
+                                                            <div class="input-group  @error('file') is-invalid @enderror">
+                                                                <div class="custom-file">
+                                                                    <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
+                                                                    <label class="custom-file-label" for="file">Choose file</label>
+                                                                </div>
+                                                            </div>
+                                                            @error('file')
+                                                            <div class="invalid-feedback">
+                                                                {{$message}}
+                                                            </div>
+                                                            @enderror
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <!-- /.card-body -->
+                                                    <!-- /.card-body -->
 
-                                                <div class="card-footer">
-                                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
-                                                </div>
-                                            </form>
+                                                    <div class="card-footer">
+                                                        <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                                        <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                                    </div>
+                                                </form>
 
+                                            </div>
+                                            <!-- /.tab-pane -->
+
+                                            <!-- INSERT LINK -->
+                                            <div class="tab-pane" id="linkPresent">
+                                                <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="title">Title</label>
+                                                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                                            @error('title')
+                                                            <div class="invalid-feedback">
+                                                                {{$message}}
+                                                            </div>
+                                                            @enderror
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="category">Category</label>
+                                                            <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                                <option value="">Select Category</option>
+                                                                @foreach($category as $row)
+                                                                <option value="{{$row->category_name}}" @if(old('category')==$row->category_name) selected @endif>{{$row->category_name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            @error('category')
+                                                            <div class="invalid-feedback">
+                                                                Please select category
+                                                            </div>
+                                                            @enderror
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="note">Note</label>
+                                                            <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                                            @error('note')
+                                                            <div class=" invalid-feedback">
+                                                                {{$message}}
+                                                            </div>
+                                                            @enderror
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="link">Link</label>
+                                                            <input type="text" class="form-control @error('link') is-invalid @enderror" id="link" name="link" placeholder="Link" value="{{old('link')}}">
+                                                            @error('link')
+                                                            <div class="invalid-feedback">
+                                                                {{$message}}
+                                                            </div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.card-body -->
+
+                                                    <div class="card-footer">
+                                                        <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                                        <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.tab-pane -->
                                         </div>
-                                        <!-- /.tab-pane -->
+                                        <!-- /.tab-content -->
+                                    </div><!-- /.card-body -->
 
-                                        <!-- INSERT LINK -->
-                                        <div class="tab-pane" id="linkPresent">
-                                            <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <label for="title">Title</label>
-                                                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
-                                                        @error('title')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
+                                </div>
+                                @endif
+                                <!-- /.tab-pane -->
 
-                                                    <div class="form-group">
-                                                        <label for="category">Category</label>
-                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
-                                                            <option value="">Select Category</option>
-                                                            @foreach($category as $row)
-                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('category')
-                                                        <div class="invalid-feedback">
-                                                            Please select category
-                                                        </div>
-                                                        @enderror
-                                                    </div>
+                                <!-- PAST -->
+                                @if(strtotime(date('Y-m-d H:i:s')) > strtotime(date('Y-m-d') . ' 08:00:00') && strtotime(date('Y-m-d H:i:s')) < strtotime(date('Y-m-d') . ' 17:00:00' )) <!-- -->
+                                    <div class="tab-pane" id="past">
+                                        @else
+                                        <div class="tab-pane active" id="past">
+                                            @endif
+                                            <div class="card-header p-2">
+                                                <ul class="nav nav-pills">
+                                                    <li class="nav-item"><a class="nav-link active" href="#filePast" data-toggle="tab">File</a></li>
+                                                    <li class="nav-item"><a class="nav-link" href="#linkPast" data-toggle="tab">Link</a></li>
+                                                </ul>
+                                            </div><!-- /.card-header -->
 
-                                                    <div class="form-group">
-                                                        <label for="note">Note</label>
-                                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
-                                                        @error('note')
-                                                        <div class=" invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
+                                            <div class="card-body">
+                                                <div class="tab-content">
 
-                                                    <div class="form-group">
-                                                        <label for="link">Link</label>
-                                                        <input type="text" class="form-control @error('link') is-invalid @enderror" id="link" name="link" placeholder="Link" value="{{old('link')}}">
-                                                        @error('link')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
+                                                    <!-- INSERT FILE -->
+                                                    <div class="active tab-pane" id="filePast">
+                                                        <!-- form start -->
+                                                        <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="card-body">
+                                                                <div class="form-group">
+                                                                    <label for="title">Title</label>
+                                                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                                                    @error('title')
+                                                                    <div class="invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="category">Category</label>
+                                                                    <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                                        <option value="">Select Category</option>
+                                                                        @foreach($category as $row)
+                                                                        <option value="{{$row->category_name}}" @if(old('category')==$row->category_name)selected@endif>{{$row->category_name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @error('category')
+                                                                    <div class="invalid-feedback">
+                                                                        Please select category
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="date">Date (If This Empty, It's mean You Don't Have Missed Upload)</label>
+                                                                    <select class="form-control select2 @error('date') is-invalid @enderror" data-placeholder="Select Date (If This Empty, It's mean You Don't Have Missed Upload)" style="width: 100%;" name="date">
+                                                                        <option value="">Select Date</option>
+                                                                        @foreach($date as $row)
+                                                                        <option value="{{$row->missed_upload_date}}">{{Carbon\Carbon::parse($row->missed_upload_date)->isoFormat('D MMMM Y')}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @error('date')
+                                                                    <div class="invalid-feedback">
+                                                                        Please select date
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="note">Note</label>
+                                                                    <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                                                    @error('note')
+                                                                    <div class=" invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="file">File Upload (Can Multiple)</label>
+                                                                    <div class="input-group  @error('file') is-invalid @enderror">
+                                                                        <div class="custom-file">
+                                                                            <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
+                                                                            <label class="custom-file-label" for="file">Choose file</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    @error('file')
+                                                                    <div class="invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.card-body -->
+
+                                                            <div class="card-footer">
+                                                                <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                                                <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                                            </div>
+                                                        </form>
+
                                                     </div>
+                                                    <!-- /.tab-pane -->
+
+                                                    <!-- INSERT LINK -->
+                                                    <div class="tab-pane" id="linkPast">
+                                                        <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="card-body">
+                                                                <div class="form-group">
+                                                                    <label for="title">Title</label>
+                                                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
+                                                                    @error('title')
+                                                                    <div class="invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="category">Category</label>
+                                                                    <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
+                                                                        <option value="">Select Category</option>
+                                                                        @foreach($category as $row)
+                                                                        <option value="{{$row->category_name}}" @if(old('category')==$row->category_name)selected@endif>{{$row->category_name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @error('category')
+                                                                    <div class="invalid-feedback">
+                                                                        Please select category
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="date">Date (If This Empty, It's mean You Don't Have Missed Upload)</label>
+                                                                    <select class="form-control select2 @error('date') is-invalid @enderror" data-placeholder="Select Date (If This Empty, It's mean You Don't Have Missed Upload)" style="width: 100%;" name="date">
+                                                                        <option value="">Select Date</option>
+                                                                        @foreach($date as $row)
+                                                                        <option value="{{$row->missed_upload_date}}">{{Carbon\Carbon::parse($row->missed_upload_date)->isoFormat('D MMMM Y')}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @error('date')
+                                                                    <div class="invalid-feedback">
+                                                                        Please select date
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="note">Note</label>
+                                                                    <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
+                                                                    @error('note')
+                                                                    <div class=" invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="link">Link</label>
+                                                                    <input type="text" class="form-control @error('link') is-invalid @enderror" id="link" name="link" placeholder="Link" value="{{old('link')}}">
+                                                                    @error('link')
+                                                                    <div class="invalid-feedback">
+                                                                        {{$message}}
+                                                                    </div>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.card-body -->
+
+                                                            <div class="card-footer">
+                                                                <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                                                <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                    <!-- /.tab-pane -->
                                                 </div>
-                                                <!-- /.card-body -->
-
-                                                <div class="card-footer">
-                                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
-                                                </div>
-                                            </form>
-
+                                                <!-- /.tab-content -->
+                                            </div><!-- /.card-body -->
                                         </div>
                                         <!-- /.tab-pane -->
                                     </div>
                                     <!-- /.tab-content -->
-                                </div><!-- /.card-body -->
-
-                            </div>
-                            <!-- /.tab-pane -->
-
-                            <!-- PAST -->
-                            <div class="tab-pane" id="past">
-                                <div class="card-header p-2">
-                                    <ul class="nav nav-pills">
-                                        <li class="nav-item"><a class="nav-link active" href="#filePast" data-toggle="tab">File</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#linkPast" data-toggle="tab">Link</a></li>
-                                    </ul>
-                                </div><!-- /.card-header -->
-
-                                <div class="card-body">
-                                    <div class="tab-content">
-
-                                        <!-- INSERT FILE -->
-                                        <div class="active tab-pane" id="filePast">
-                                            <!-- form start -->
-                                            <form action="{{route('content_store_file')}}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <label for="title">Title</label>
-                                                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
-                                                        @error('title')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="category">Category</label>
-                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
-                                                            <option value="">Select Category</option>
-                                                            @foreach($category as $row)
-                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('category')
-                                                        <div class="invalid-feedback">
-                                                            Please select category
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="date">Date</label>
-                                                        <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{old('date')}}">
-                                                        @error('date')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="note">Note</label>
-                                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
-                                                        @error('note')
-                                                        <div class=" invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="file">File Upload (Can Multiple)</label>
-                                                        <div class="input-group  @error('file') is-invalid @enderror">
-                                                            <div class="custom-file">
-                                                                <input type="file" class="custom-file-input @error('file') is-invalid @enderror" id="file" name="file[]" multiple>
-                                                                <label class="custom-file-label" for="file">Choose file</label>
-                                                            </div>
-                                                        </div>
-                                                        @error('file')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <!-- /.card-body -->
-
-                                                <div class="card-footer">
-                                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                        <!-- /.tab-pane -->
-
-                                        <!-- INSERT LINK -->
-                                        <div class="tab-pane" id="linkPast">
-                                            <form action="{{route('content_store_link')}}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <label for="title">Title</label>
-                                                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{old('title')}}">
-                                                        @error('title')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="category">Category</label>
-                                                        <select class="form-control select2 @error('category') is-invalid @enderror" data-placeholder="Select Category" style="width: 100%;" name="category">
-                                                            <option value="">Select Category</option>
-                                                            @foreach($category as $row)
-                                                            <option value="{{$row->category_name}}">{{$row->category_name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('category')
-                                                        <div class="invalid-feedback">
-                                                            Please select category
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="date">Date</label>
-                                                        <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Date" value="{{old('date')}}">
-                                                        @error('date')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="note">Note</label>
-                                                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" placeholder="Note">{{old('note')}}</textarea>
-                                                        @error('note')
-                                                        <div class=" invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="link">Link</label>
-                                                        <input type="text" class="form-control @error('link') is-invalid @enderror" id="link" name="link" placeholder="Link" value="{{old('link')}}">
-                                                        @error('link')
-                                                        <div class="invalid-feedback">
-                                                            {{$message}}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <!-- /.card-body -->
-
-                                                <div class="card-footer">
-                                                    <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                                    <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                        <!-- /.tab-pane -->
-                                    </div>
-                                    <!-- /.tab-content -->
-                                </div><!-- /.card-body -->
-                            </div>
-                            <!-- /.tab-pane -->
-                        </div>
-                        <!-- /.tab-content -->
-                    </div><!-- /.card-body -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card -->
-            </div>
         </section>
     </section>
 

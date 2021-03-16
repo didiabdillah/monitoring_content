@@ -19,6 +19,7 @@ class CreateContentsTable extends Migration
             $table->string('content_title', 255);
             $table->string('content_category', 255);
             $table->date('content_date');
+            $table->boolean('content_is_present');
             $table->text('content_note')->nullable();
             $table->enum('content_type', ['file', 'link']);
             $table->enum('content_status', ['accepted', 'rejected', 'process']);

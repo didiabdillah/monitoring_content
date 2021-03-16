@@ -61,6 +61,7 @@
                                     <th>Category</th>
                                     <th>Status</th>
                                     <th>Timestamps</th>
+                                    <th>Upload Type</th>
                                     <th>Content</th>
                                     <th>Options</th>
                                 </tr>
@@ -103,9 +104,23 @@
                                     </td>
 
                                     <td>
-                                        <h6>Uploaded : <span class="badge badge-secondary">{{Carbon\Carbon::parse($data->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        <h6>Uploaded : </h6>
+                                        <h6><span class="badge badge-secondary">{{Carbon\Carbon::parse($data->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
                                         @if($data->updated_at != $data->created_at)
-                                        <h6>Last Update : <span class="badge badge-warning">{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        <h6>Last Update : </h6>
+                                        <h6><span class="badge badge-warning">{{Carbon\Carbon::parse($data->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h6>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if($data->content_is_present == true)
+                                        <h6>Upload Type : </h6>
+                                        <h6><span class="badge badge-secondary">{{'Present'}}</span></h6>
+                                        @else
+                                        <h6>Upload Type : </h6>
+                                        <h6><span class="badge badge-secondary">{{'Past'}}</span></h6>
+                                        <h6>For Date : </h6>
+                                        <h6><span class="badge badge-warning">{{Carbon\Carbon::parse($data->content_date)->isoFormat('D MMMM Y')}}</span></h6>
                                         @endif
                                     </td>
 

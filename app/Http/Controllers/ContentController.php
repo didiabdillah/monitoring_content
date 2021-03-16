@@ -41,8 +41,12 @@ class ContentController extends Controller
     public function insert()
     {
         $category = Category::orderBy('category_name', 'asc')->get();
+        $missed_upload_date = Missed_upload::where('missed_upload_user_id', Session::get('user_id'))
+            ->where('missed_upload_total', '!=', 0)
+            ->orderBy('missed_upload_date', 'asc')
+            ->get();
 
-        return view('content.operator.insert', ['category' => $category]);
+        return view('content.operator.insert', ['category' => $category, 'date' => $missed_upload_date]);
     }
 
     public function store_file(Request $request)
@@ -55,6 +59,7 @@ class ContentController extends Controller
                     'date'  => 'required',
                     'category'  => 'required',
                     'note'  => 'max:60000',
+                    'file' => 'required',
                     'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
                 ],
                 [
@@ -67,6 +72,7 @@ class ContentController extends Controller
                     'title'  => 'required|max:255',
                     'category'  => 'required',
                     'note'  => 'max:60000',
+                    'file' => 'required',
                     'file.*'  => 'required|mimes:doc,docx,jpeg,jpg,png,gif|max:10000',
                 ],
                 [
@@ -80,6 +86,7 @@ class ContentController extends Controller
         $type = "file";
         $user_id = $request->session()->get('user_id');
         $date = ($request->date) ? $request->date : date('Y-m-d');
+        $is_present = ($request->date) ? false : true;
         $destination_word = "assets/file/word/";
         $destination_img = "assets/file/img/";
         $category = htmlspecialchars($request->category);
@@ -90,6 +97,7 @@ class ContentController extends Controller
             'content_note' => $note,
             'content_type' => $type,
             'content_date' => $date,
+            'content_is_present' => $is_present,
             'content_category' => $category,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
@@ -123,11 +131,16 @@ class ContentController extends Controller
             }
         }
 
-        //Remove From Missed Upload Data
-        if ($request->date) {
-            // Missed_upload::where('missed_upload_user_id', $user_id)
-            //     ->where('missed_upload_date', $request->date)
-            //     ->delete();
+        //change value From Missed Upload Data
+        if ($is_present == false) {
+            $missed_upload_total = Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $request->date)->first()->missed_upload_total;
+
+            Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $request->date)
+                ->update([
+                    'missed_upload_total' => $missed_upload_total - 1
+                ]);
         }
 
         //Flash Message
@@ -169,6 +182,7 @@ class ContentController extends Controller
         $category = htmlspecialchars($request->category);
         $type = "link";
         $date = ($request->date) ? $request->date : date('Y-m-d');
+        $is_present = ($request->date) ? false : true;
         $user_id = $request->session()->get('user_id');
         $link = htmlspecialchars($request->link);
 
@@ -179,6 +193,7 @@ class ContentController extends Controller
             'content_type' => $type,
             'content_category' => $category,
             'content_date' => $date,
+            'content_is_present' => $is_present,
             'content_user_id' => $user_id,
             'content_status' => __('content_status.content_status_process'),
         ];
@@ -190,6 +205,18 @@ class ContentController extends Controller
             'content_link_url' => $link,
         ];
         Content_link::create($data);
+
+        //change value From Missed Upload Data
+        if ($is_present == false) {
+            $missed_upload_total = Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $request->date)->first()->missed_upload_total;
+
+            Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $request->date)
+                ->update([
+                    'missed_upload_total' => $missed_upload_total - 1
+                ]);
+        }
 
         //Flash Message
         flash_alert(
@@ -204,19 +231,25 @@ class ContentController extends Controller
     public function edit($id)
     {
         $content = Content::find($id);
+        $missed_upload_date = Missed_upload::where('missed_upload_user_id', Session::get('user_id'))
+            ->where('missed_upload_total', '!=', 0)
+            ->orderBy('missed_upload_date', 'asc')
+            ->get();
+
         $date = date('Y-m-d', strtotime($content->created_at));
+
         $category = Category::orderBy('category_name', 'asc')->get();
 
         if ($content->content_type == "file") {
 
-            return view('content.operator.edit_file', ['content' => $content, 'date' => $date, 'category' => $category]);
+            return view('content.operator.edit_file', ['content' => $content, 'date' => $date, 'category' => $category, 'date_list' => $missed_upload_date]);
         } else if ($content->content_type == "link") {
 
 
             foreach ($content->content_link()->get() as $link) {
                 $content_link = $link->content_link_url;
             }
-            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link, 'date' => $date, 'category' => $category]);
+            return view('content.operator.edit_link', ['content' => $content, 'content_link' => $content_link, 'date' => $date, 'category' => $category, 'date_list' => $missed_upload_date]);
         }
     }
 
@@ -262,7 +295,7 @@ class ContentController extends Controller
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
         //Insert Data
-        if ($request->date) {
+        if ($content->content_is_present == false) {
             $data_content = [
                 'content_title' => $title,
                 'content_note' => $note,
@@ -391,8 +424,8 @@ class ContentController extends Controller
         $link = htmlspecialchars($request->link);
         $status = ($content->content_status == __('content_status.content_status_success')) ? __('content_status.content_status_success') : __('content_status.content_status_process');
 
-        //Insert Data
-        if ($request->date) {
+        //update Data
+        if ($content->content_is_present == false) {
             $data_content = [
                 'content_title' => $title,
                 'content_note' => $note,
@@ -457,6 +490,19 @@ class ContentController extends Controller
         }
 
         Content::destroy('content_id', $id);
+
+        //change value From Missed Upload Data
+        if ($Content->content_is_present == false) {
+            $user_id = Session::get('user_id');
+            $missed_upload_total = Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $Content->content_date)->first()->missed_upload_total;
+
+            Missed_upload::where('missed_upload_user_id', $user_id)
+                ->where('missed_upload_date', $Content->content_date)
+                ->update([
+                    'missed_upload_total' => $missed_upload_total + 1
+                ]);
+        }
 
         //Flash Message
         flash_alert(
