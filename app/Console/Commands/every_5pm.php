@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\Content;
 use App\Models\Missed_upload;
+use App\Models\Holiday;
 
 class every_5pm extends Command
 {
@@ -41,12 +42,13 @@ class every_5pm extends Command
     public function handle()
     {
         $users = User::where('user_role', 'operator')->get();
+        $holiday = Holiday::where('holiday_date', date('Y-m-d'))->count();
 
         // if (date('N') == 6 || date('N') == 7) {
         //     // Nothing
         // } 
 
-        if (date('N') != 6 || date('N') != 7) {
+        if (date('N') != 6 || date('N') != 7 || $holiday == 0) {
             foreach ($users as $user) {
                 $content = Content::where('content_user_id', $user->user_id)
                     ->where('content_date', date('Y-m-d'))

@@ -8,6 +8,7 @@ use App\Models\Content;
 use App\Models\Notification;
 use App\Models\Telegram_data_source;
 use App\Models\Setting;
+use App\Models\Holiday;
 
 use App\Traits\RequestTrait;
 use App\Traits\RequestPingNotif;
@@ -48,8 +49,9 @@ class every_3pm extends Command
         $users = User::where('user_role', 'operator')->get();
         $telegram = Telegram_data_source::where('chat_mute', false)->get();
         $setting = Setting::find(1);
+        $holiday = Holiday::where('holiday_date', date('Y-m-d'))->count();
 
-        if (date('N') == 6 || date('N') == 7) {
+        if (date('N') == 6 || date('N') == 7 || $holiday == 0) {
             // Nothing
         } else {
             foreach ($users as $user) {
