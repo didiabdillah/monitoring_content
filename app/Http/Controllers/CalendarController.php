@@ -19,10 +19,19 @@ class CalendarController extends Controller
 
     public function detail($date)
     {
-        $data = Missed_upload::join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
-            ->select('missed_uploads.*', 'users.user_name', 'users.user_image')
+        // $data = Missed_upload::join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+        //     ->select('missed_uploads.*', 'users.user_name', 'users.user_image')
+        //     ->where('missed_uploads.missed_upload_date', $date)
+        //     ->orderBy('missed_uploads.created_at', 'asc')
+        //     ->get();
+
+        $data =  Missed_upload::join('users', 'missed_uploads.missed_upload_user_id', '=', 'users.user_id')
+            ->select('users.user_name', 'users.user_image as avatar', Missed_upload::raw('SUM(missed_upload_total) as total', 'missed_upload_date'))
             ->where('missed_uploads.missed_upload_date', $date)
-            ->orderBy('missed_uploads.created_at', 'asc')
+            ->groupBy('users.user_name')
+            ->groupBy('users.user_image')
+            ->groupBy('users.user_id')
+            ->orderBy('users.user_name', 'asc')
             ->get();
 
         return view('calendar.detail', ['data' => $data]);
@@ -30,9 +39,10 @@ class CalendarController extends Controller
 
     public function get_data(Request $request)
     {
-        $total_missed_day = Missed_upload::orderBy('missed_upload_date', 'desc')->get()->groupBy(function ($item) {
-            return $item->missed_upload_date;
-        });
+        $total_missed_day = Missed_upload::where('missed_upload_total', '!=', 0)
+            ->orderBy('missed_upload_date', 'desc')->get()->groupBy(function ($item) {
+                return $item->missed_upload_date;
+            });
 
         $data = [];
         $no = 1;

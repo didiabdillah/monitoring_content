@@ -89,16 +89,34 @@
 
                                 <strong><i class="fas fa-calendar-alt mr-1"></i> Uploaded</strong>
                                 <br>
-                                <h4> <span class="badge badge-secondary">{{Carbon\Carbon::parse($content->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
+                                <h5> <span class="badge badge-secondary">{{Carbon\Carbon::parse($content->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h5>
 
                                 <hr>
                                 @if($content->updated_at != $content->created_at)
                                 <strong><i class="fas fa-calendar-alt mr-1"></i> Last Update</strong>
                                 <br>
-                                <h4> <span class="badge badge-warning">{{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h4>
+                                <h5> <span class="badge badge-warning">{{Carbon\Carbon::parse($content->updated_at)->isoFormat('D MMMM Y, H:mm:ss')}}</span></h5>
 
                                 <hr>
                                 @endif
+
+                                @if($content->content_is_present == true)
+                                <strong><i class="fas fa-calendar-alt mr-1"></i> Upload Type</strong>
+                                <br>
+                                <h5> <span class="badge badge-primary">{{'Present'}}</span></h5>
+                                <hr>
+                                @else
+                                <strong><i class="fas fa-upload mr-1"></i> Upload Type</strong>
+                                <br>
+                                <h5> <span class="badge badge-secondary">{{'Past'}}</span></h5>
+                                <hr>
+                                <strong><i class="fas fa-calendar-times mr-1"></i> For Date</strong>
+                                <br>
+                                <h5> <span class="badge badge-success">{{Carbon\Carbon::parse($content->content_date)->isoFormat('D MMMM Y')}}</span></h5>
+                                <hr>
+                                @endif
+
+
                                 <strong><i class="fas fa-sticky-note mr-1"></i> Note</strong>
 
                                 <p class="text-muted"> {{$content->content_note}}</p>
@@ -164,8 +182,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if($content->content_history()->orderBy('created_at', 'desc')->count() != 0)
                                     @foreach($content->content_history()->orderBy('created_at', 'desc')->get() as $content_history)
-                                    @if($content_history)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{Carbon\Carbon::parse($content_history->created_at)->isoFormat('D MMMM Y, H:mm:ss')}}</td>
@@ -182,12 +200,12 @@
                                             <p>{{$content_history->content_history_note}}</p>
                                         </td>
                                     </tr>
+                                    @endforeach
                                     @else
                                     <tr>
                                         <td>No History</td>
                                     </tr>
                                     @endif
-                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

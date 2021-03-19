@@ -46,13 +46,14 @@
                             </thead>
                             <tbody>
                                 @foreach($data as $row)
+                                @if($row->total != 0)
                                 <tr>
                                     <td>
                                         <h6>{{$loop->iteration}}</h6>
                                     </td>
 
                                     <td>
-                                        <img alt="Avatar" class="table-avatar" src="{{URL::asset('assets/img/profile/' . $row->user_image)}}" style="height: 40px;">
+                                        <img alt="Avatar" class="table-avatar" src="{{URL::asset('assets/img/profile/' . $row->avatar)}}" style="height: 40px;">
                                     </td>
 
                                     <td>
@@ -64,10 +65,11 @@
                                     </td>
 
                                     <td>
-                                        <h6>{{$row->missed_upload_total}}</h6>
+                                        <h6>{{$row->total}}</h6>
                                     </td>
 
                                 </tr>
+                                @endif
                                 @endforeach
                             </tbody>
                         </table>

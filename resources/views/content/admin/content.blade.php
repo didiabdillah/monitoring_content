@@ -113,12 +113,12 @@
                                     <td>
                                         @if($data->content_is_present == true)
                                         <h6>Upload Type : </h6>
-                                        <h6><span class="badge badge-secondary">{{'Present'}}</span></h6>
+                                        <h6><span class="badge badge-primary">{{'Present'}}</span></h6>
                                         @else
                                         <h6>Upload Type : </h6>
                                         <h6><span class="badge badge-secondary">{{'Past'}}</span></h6>
                                         <h6>For Date : </h6>
-                                        <h6><span class="badge badge-warning">{{Carbon\Carbon::parse($data->content_date)->isoFormat('D MMMM Y')}}</span></h6>
+                                        <h6><span class="badge badge-success">{{Carbon\Carbon::parse($data->content_date)->isoFormat('D MMMM Y')}}</span></h6>
                                         @endif
                                     </td>
 
