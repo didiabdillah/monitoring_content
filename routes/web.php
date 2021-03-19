@@ -67,6 +67,16 @@ Route::group(['middleware' => ['prevent_Back_Button']], function () {
                 Route::post('/get_data', 'CalendarController@get_data')->name('calendar_get_data');
             });
 
+            //Holiday
+            Route::group(['prefix' => 'holiday'], function () {
+                Route::get('/', 'HolidayController@index')->name('holiday');
+                Route::get('/insert', 'HolidayController@insert')->name('holiday_insert');
+                Route::post('/insert', 'HolidayController@store')->name('holiday_store');
+                Route::get('/{id}/edit', 'HolidayController@edit')->name('holiday_edit');
+                Route::patch('/{id}/edit', 'HolidayController@update')->name('holiday_update');
+                Route::delete('/{id}/destroy', 'HolidayController@destroy')->name('holiday_destroy');
+            });
+
             //Category
             Route::group(['prefix' => 'category'], function () {
                 Route::get('/', 'CategoryController@index')->name('category');

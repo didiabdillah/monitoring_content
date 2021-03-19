@@ -185,6 +185,15 @@
                         </li>
 
                         <li class="nav-item">
+                            <a href="{{route('holiday')}}" class="nav-link @if(Request::segment(1) == 'holiday' || Request::segment(2) == 'holiday') {{'active'}} @endif">
+                                <i class="nav-icon fas fa-calendar-times"></i>
+                                <p>
+                                    Holiday Event
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{route('category')}}" class="nav-link @if(Request::segment(1) == 'category' || Request::segment(2) == 'category') {{'active'}} @endif">
                                 <i class="nav-icon fas fa-layer-group"></i>
                                 <p>

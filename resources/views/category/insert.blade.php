@@ -45,7 +45,7 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <a href="{{route('content')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                <a href="{{route('category')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
                             </div>
                         </form>

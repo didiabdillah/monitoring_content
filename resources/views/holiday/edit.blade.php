@@ -28,14 +28,24 @@
 
                     <div class="card-body">
                         <!-- form start -->
-                        <form action="{{route('category_update', $category->category_id)}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{route('holiday_update', $holiday->holiday_id)}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('patch')
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <input type="text" class="form-control @error('category') is-invalid @enderror" id="category" name="category" placeholder="Category Name" value="{{$category->category_name}}">
-                                    @error('category')
+                                    <label for="event">Event</label>
+                                    <input type="text" class="form-control @error('event') is-invalid @enderror" id="event" name="event" placeholder="Holiday Event Name" value="{{$holiday->holiday_event}}">
+                                    @error('event')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="date">Date</label>
+                                    <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Holiday Date" value="{{$holiday->holiday_date}}">
+                                    @error('date')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
@@ -46,7 +56,7 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <a href="{{route('category')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                <a href="{{route('holiday')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Edit</button>
                             </div>
                         </form>

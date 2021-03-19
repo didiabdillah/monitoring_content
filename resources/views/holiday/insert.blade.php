@@ -1,6 +1,6 @@
 @extends('layout.layout_admin')
 
-@section('title', 'Edit Category')
+@section('title', 'Insert Category')
 
 @section('page')
 
@@ -18,7 +18,7 @@
                 <!-- Default box -->
                 <div class="card">
                     <div class="card-header">
-                        Edit Category
+                        Insert Holiday
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                 <i class="fas fa-minus"></i>
@@ -28,14 +28,23 @@
 
                     <div class="card-body">
                         <!-- form start -->
-                        <form action="{{route('category_update', $category->category_id)}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{route('holiday_store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            @method('patch')
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <input type="text" class="form-control @error('category') is-invalid @enderror" id="category" name="category" placeholder="Category Name" value="{{$category->category_name}}">
-                                    @error('category')
+                                    <label for="event">Event</label>
+                                    <input type="text" class="form-control @error('event') is-invalid @enderror" id="event" name="event" placeholder="Holiday Event" value="{{old('event')}}">
+                                    @error('event')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="date">Date</label>
+                                    <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" placeholder="Holiday Event" value="{{old('date')}}">
+                                    @error('date')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
@@ -46,8 +55,8 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <a href="{{route('category')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Edit</button>
+                                <a href="{{route('holiday')}}" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Insert</button>
                             </div>
                         </form>
                     </div><!-- /.card-body -->
